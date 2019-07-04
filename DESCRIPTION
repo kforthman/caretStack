@@ -1,10 +1,10 @@
 Package: caretStack
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Title: Stacks models from the caret package to create a more robust prediction
+Version: 0.0.0
+Authors@R: person("Katie", "Forthman", email = "kclary@laureateinstitute.org", role = c("aut", "cre"))
+Description: Use this package on top of caret to easily stack machine learning models and plot your results.
 Depends: R (>= 3.5.3)
-License: What license is it under?
+License: None
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1.9000
