@@ -1,3 +1,5 @@
+#' No Description.
+
 rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
                  control, tuneL, preProc.opt, metric, dir.path, file.root,
                  stack.method='wt.avg', weighted.by=NULL, stack.wt=NULL, control.stack=NULL){

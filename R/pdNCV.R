@@ -1,6 +1,8 @@
-# partial-depedence plots using repeated nested CV objects
-# current PDP only allows stacking by weighted average #
-## In classification, stacking by other learner uses different "predictor names"
+#' Partial-depedence plots using repeated nested CV objects
+#' Current PDP only allows stacking by weighted average.
+#' In classification, stacking by other learner uses different "predictor names".
+
+
 pdNCV <- function(sel.var, resp.var, nRep, nFolds, dir.path, file.root, rncv.obj, stack.wt){
   for (j in 1:length(sel.var)) {
     for (r in 1:nRep){

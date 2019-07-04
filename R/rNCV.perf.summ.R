@@ -1,4 +1,5 @@
-# summarize model performance in rNCV
+#' Summarize model performance in rNCV
+
 rNCV.perf.summ <- function(rNCV.obj){
   perf <- data.frame(rNCV.obj$perf.train[, -1])
   perf$dataset <- 'train'

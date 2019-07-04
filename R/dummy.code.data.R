@@ -1,4 +1,10 @@
-### a function to convert categorical predictors to dummy coding ###
+#' Convert categorical predictors to dummy coding
+#'
+#' A function to convert categorical predictors to dummy coding.
+#' @param data
+#' @param var.list
+#' @param ref.list
+
 dummy.code.data <- function(data, var.list, ref.list){
   if (!'psych' %in% installed.packages()){
     install.packages('psych')

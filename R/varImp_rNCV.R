@@ -1,4 +1,5 @@
-# variable importance for repeated nested CV #
+#' Variable importance for repeated nested CV
+
 varImp_rNCV <- function(rncv.obj){
   names(rncv.obj$var.imp)[4] <- 'importance'
   summ <- setNames(aggregate(importance~variable, data=rncv.obj$var.imp, mean), c('variable','mean'))

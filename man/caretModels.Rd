@@ -7,11 +7,7 @@
 caretModels(TrainSet, resp.var, control, preProc.opt, tuneL, metric,
   methods)
 }
-\arguments{
-\item{TrainSet}{Your training dataset.}
-
-\item{resp.var}{blah blah}
-}
 \description{
 A function to build prediction models for the training set.
+kernlab requires formula instead of y vector and X matrix
 }

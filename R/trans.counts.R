@@ -1,4 +1,4 @@
-### functions for one training set (TrainSet) and one test set (TestSet) ###
+#' No Description.
 
 trans.counts <- function(data){
   x.trans <- data

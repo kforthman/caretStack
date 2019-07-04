@@ -1,3 +1,5 @@
+#' No Description.
+
 pdEst <- function(models, final, pred.var, stack.model=NULL, stack.weight=NULL){
   if (final!='Stack'){
     pd.est <- partial(models[[names(models)==final]], pred.var, plot=F, rug=TRUE)

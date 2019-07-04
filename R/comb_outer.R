@@ -1,4 +1,9 @@
-# a function to combine results from parallized outer loop #
+#' Combine results from parallelized outer loop.
+#'
+#' A function to combine results from parallelized outer loop.
+#' @param LL1
+#' @param LL2
+
 comb_outer <- function(LL1, LL2){
   stack.wt     <- rbind(LL1$stack.wt,     LL2$stack.wt)
   stack.model  <- list(LL1$stack.model,   LL2$stack.model)

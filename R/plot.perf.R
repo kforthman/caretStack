@@ -1,3 +1,9 @@
+#' No Description.
+
+# NOTE: my notation of "train.by.fold" refers to the "testing" folds
+# i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)
+#      each training set is further divided into k parts for parameter optimization (inner loop)
+
 plot.perf <- function(model.perf, metrics='all'){
   perf.train <- model.perf$train.by.fold
   perf.test <- data.frame(model.perf$test)

@@ -1,9 +1,5 @@
-# For a training set, getTrainPerf() gives the mean of "k" (for k-fold CV) "by.fold" performance
-#  measures whereas defaultSummary(pred) gives 'combine fold' measures.
-# For consistency purpose (with stacking predictions), I use defaultSummary(pred)
-# NOTE: my notation of "train.by.fold" refers to the "testing" folds
-# i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)
-#      each training set is further divided into k parts for parameter optimization (inner loop)
+#' No Description.
+
 # revise postResamp() to use "traditional' formula in calculating R2
 postResample <- function(pred, obs){
   isNA <- is.na(pred)

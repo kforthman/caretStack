@@ -1,3 +1,9 @@
+#' No Description.
+
+# NOTE: my notation of "train.by.fold" refers to the "testing" folds
+# i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)
+#      each training set is further divided into k parts for parameter optimization (inner loop)
+
 permuPred <- function(TrainSet, TestSet, resp.var, ref.lv=NULL,
                       control, preProc.opt, tuneL, metric, methods,
                       stack.method='none', weighted.by=NULL, stack.wt=NULL,

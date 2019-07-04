@@ -1,3 +1,8 @@
+#' Create a circular bar plot
+#'
+#' @param mydata The dataset that you want to plot.
+#' @param graphtitle The title of the plot.
+
 Circbar <- function(mydata, graphtitle){
 
   data <- mydata

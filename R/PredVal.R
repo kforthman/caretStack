@@ -1,4 +1,9 @@
-# a function to extract predicted values (and construct stack models)
+#' No Description.
+
+# For a training set, getTrainPerf() gives the mean of "k" (for k-fold CV) "by.fold" performance
+#  measures whereas defaultSummary(pred) gives 'combine fold' measures.
+# For consistency purpose (with stacking predictions), I use defaultSummary(pred)
+
 PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
                     weighted.by=NULL, stack.wt=NULL, control.stack=NULL, tuneL=NULL){
   res <- list(train = NULL, test = NULL)

@@ -1,3 +1,5 @@
+#' No Description.
+
 PermTest.rncv.old <- function(perf.obs, perf.perm, figure){
   if ('method' %in% names(perf.obs)){
     perf.obs  <- perf.obs[, -grep('method', names(perf.obs))]

@@ -1,3 +1,5 @@
+#' No Description.
+
 ML.similarity <- function(models){
   cormat <- round(modelCor(resamples(models)), 2)
   require(ggplot2)

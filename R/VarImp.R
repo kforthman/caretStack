@@ -1,4 +1,5 @@
-# variable importance for stack models
+#' Variable importance for stack models
+
 VarImp <- function(models, final, weight){
   var.imp <- varImp(models[[1]])$importance
   names(var.imp)[1] <- names(models)[1]
