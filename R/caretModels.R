@@ -1,3 +1,12 @@
+#' Build a caret model
+#'
+#' A function to build prediction models for the training set.
+#' @param TrainSet Your training dataset.
+#' @param resp.var blah blah
+#' @param control
+#' @param preProc.opt
+#' @param metric
+#' @param methods
 # a function to build prediction models for the training set
 # kernlab requires formula instead of y vector and X matrix
 caretModels <- function(TrainSet, resp.var,
