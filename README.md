@@ -2,6 +2,8 @@ caretStack
 
 To install in R:
 
-install(devtools)
-devtools::install_git(https://github.com/kforthman/caretStack.git)
+```
+install.packages("devtools")
+devtools::install_github("kforthman/caretStack")
 library(caretStack)
+```
