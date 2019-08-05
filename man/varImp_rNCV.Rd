@@ -2,10 +2,10 @@
 % Please edit documentation in R/varImp_rNCV.R
 \name{varImp_rNCV}
 \alias{varImp_rNCV}
-\title{Variable importance for repeated nested CV}
+\title{Variable importance for repeated nested CV.}
 \usage{
 varImp_rNCV(rncv.obj)
 }
 \description{
-Variable importance for repeated nested CV
+Variable importance for repeated nested CV.
 }

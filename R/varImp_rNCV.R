@@ -1,4 +1,4 @@
-#' Variable importance for repeated nested CV
+#' Variable importance for repeated nested CV.
 
 varImp_rNCV <- function(rncv.obj){
   names(rncv.obj$var.imp)[4] <- 'importance'

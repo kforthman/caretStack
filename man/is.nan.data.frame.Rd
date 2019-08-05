@@ -2,10 +2,23 @@
 % Please edit documentation in R/is.nan.data.frame.R
 \name{is.nan.data.frame}
 \alias{is.nan.data.frame}
-\title{No Description.}
+\title{Check NaN for Data.Frame}
 \usage{
 \method{is.nan}{data.frame}(x)
 }
+\arguments{
+\item{x}{\R object to be tested: the default methods handle atomic
+    vectors.}
+}
 \description{
-No Description.
+Check NaN for Data.Frame
+}
+\examples{
+data <- data.frame(
+                    x = c(NaN, NaN, NaN),
+                    y = c("a", "b", "c"),
+                    z = c(NaN, 1, NaN),
+                    r = c(NaN, "a", NaN)
+                  )
+is.nan.data.frame(data)
 }

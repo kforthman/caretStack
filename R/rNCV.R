@@ -1,7 +1,19 @@
-#' No Description.
+#' Repeated, Nested Cross-Validation
+#'
+#' @param data The data frame containing the training set.
+#' @param nRep Number of times nCV is repeated.
+#' @param nFolds.outer Number of outer folds
+#' @param dir.path Directory where the CV data is stored.
+#' @param file.root Prefix for the CV filenames.
+#' @param stack.method ???
+#' @param weighted.by ???
+#' @param stack.wt ???
+#' @param control.stack ???
+#' @inheritParams caretModels
+#' @inheritParams PredVal
 
-rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
-                 control, tuneL, preProc.opt, metric, dir.path, file.root,
+rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
+                 trControl, tuneLength, preProcess, metric, dir.path, file.root,
                  stack.method='wt.avg', weighted.by=NULL, stack.wt=NULL, control.stack=NULL){
   ptm <- proc.time()
 
@@ -10,7 +22,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
   } else if (class(data[, resp.var])=='character')
   { resp.lv = unique(data[, resp.var])
   } else { resp.lv = 'pred' }
-  # control$allowParallel <- F
+  # trControl$allowParallel <- F
   #if (!is.null(control.stack$allowParallel)){
   #  control.stack$allowParallel <- F
   #}
@@ -24,9 +36,14 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
     y.pred.comb <- matrix(NA, nrow(data), length(resp.lv))
     colnames(y.pred.comb) <- resp.lv
 
+    #  Outer loop
+    # partition into nFolds.outer sets
+    # (left panel of flow chart)
     for(k.outer in 1:nFolds.outer) {
-      calib <- data[index.outer!=k.outer, ]
-      test.set <- data[index.outer==k.outer, ]
+      calib <- data[index.outer!=k.outer, ] #calibration (training) set
+      test.set <- data[index.outer==k.outer, ] #testing set
+
+      # impute missing data
       if (sum(is.na(calib)>0)){
         calib <- knnImputation(calib)
       }
@@ -35,22 +52,26 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
       }
 
       # Step 1. Build base learners
-      models <- caretModels(calib, resp.var, control, preProc.opt, tuneL, metric, ML.methods)
+      # (upper right in flow chart)
+      # Outputs a file for each resulting fold.
+      models <- caretModels(calib, resp.var, trControl, preProcess, tuneLength, metric, methods)
       if (!is.null(dir.path) & !is.null(file.root)){
         save(models,
              file = paste0(dir.path, resp.var, '_', file.root, '_Rep_', r, '_fold_', k.outer, '.rda'))
       }
 
       # Step 2. Extract predicted values/probabilities
+      # Use the models generated in previous step to make prediction on the testing set.
+      # Done for each ML algorithm. PredVal combines the predictions from each method.
       pred.val <- PredVal(models, test.set, resp.var, ref.lv, stack.method,
-                          weighted.by, stack.wt, control.stack, tuneL)
+                          weighted.by, stack.wt, control.stack, tuneLength)
 
-      if (length(ML.methods)>1 & !stack.method %in% c('none'))
+      if (length(methods)>1 & !stack.method %in% c('none'))
       { stack.model[[k.outer]] <- pred.val$stack.model
       weight <- rbind(weight, data.frame(Rep = r, fold = k.outer, t(pred.val$weight)))
       }
       ## predicted values/probabilities across folds ##
-      if (length(ML.methods)==1){
+      if (length(methods)==1){
         y.pred.comb[index.outer==k.outer, ] <- as.matrix(pred.val$prediction$test[[1]][, resp.lv])
       } else {
         y.pred.comb[index.outer==k.outer, ] <- as.matrix(pred.val$prediction$test$Stack[, resp.lv])
@@ -60,9 +81,9 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
       perf.t.tmp <- lapply(pred.val$prediction$train, function(x) ddply(x, .(Resample), modelPerf))
       perf.train <- do.call(rbind, perf.t.tmp)
       perf.test <- data.frame(modelPerf.summ(pred.val$prediction)$test)
-      if (length(ML.methods)==1){
-        rownames(perf.test) <- ML.methods
-      } else if (length(ML.methods)>1){
+      if (length(methods)==1){
+        rownames(perf.test) <- methods
+      } else if (length(methods)>1){
         perf.v.tmp <- perf.test[rownames(perf.test)=='Stack', ]
       }
       perf.by.fold <- rbind(perf.by.fold,
@@ -70,7 +91,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
                                        method = rownames(perf.v.tmp), perf.v.tmp))
 
       # Step 4. Variable importance
-      if (length(ML.methods)==1){
+      if (length(methods)==1){
         var.imp <- rbind(var.imp, varImp(models[[1]]))
       } else {
         var.imp <- rbind(var.imp,
@@ -92,7 +113,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, ML.methods,
       df.comb$pred <- factor(resp.lv[apply(df.comb[, resp.lv], 1, which.max)])
       df.comb$obs <- data[, resp.var]
     }
-    perf.comb <- modelPerf(df.comb) # control$summaryFunction(df.comb)
+    perf.comb <- modelPerf(df.comb) # trControl$summaryFunction(df.comb)
     perf.train$method <- gsub("\\..*", "", rownames(perf.train) )
     perf.test$method  <- gsub("\\..*", "", rownames(perf.test) )
 

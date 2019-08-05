@@ -1,17 +1,32 @@
-#' No Description.
+#' Predictive Values of Each Base Learner in Each Data Set
+#'
+#' To assess model performance in the training and testing sets, we need:
+#' \enumerate{
+#' \item Predictived values of each base learner in each data set.
+#' \item If a stack model is build on the top of individual base learners, then we also need the predictive values of the stack model in both sets.
+#' \item Compute performance metrics.
+#' }
+#'
+#' For consistency purpose (with stacking predictions), I use \code{defaultSummary(pred)}
+#'
+#' @param models
+#' @param TestSet
+#' @param resp.var
+#' @param ref.lv ???
+#' @param stack.wt ???
+#' @inheritParams caret::train
+#'
 
-# For a training set, getTrainPerf() gives the mean of "k" (for k-fold CV) "by.fold" performance
-#  measures whereas defaultSummary(pred) gives 'combine fold' measures.
-# For consistency purpose (with stacking predictions), I use defaultSummary(pred)
 
-PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
-                    weighted.by=NULL, stack.wt=NULL, control.stack=NULL, tuneL=NULL){
+
+PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, method='none',
+                    metric=NULL, stack.wt=NULL, trControl=NULL, tuneLength=NULL){
   res <- list(train = NULL, test = NULL)
 
-  if (stack.method=='wt.avg'){
+  if (method=='wt.avg'){
     if (is.null(stack.wt)){
-      stack.wt <- sapply(models, function(x) getTrainPerf(x)[, paste0('Train', weighted.by)])
-      if (weighted.by %in% c('MAE', 'RMSE', 'logLoss')){
+      stack.wt <- sapply(models, function(x) getTrainPerf(x)[, paste0('Train', metric)])
+      if (metric %in% c('MAE', 'RMSE', 'logLoss')){
         stack.wt <- 1/stack.wt
       }
       stack.wt <- stack.wt/sum(stack.wt)
@@ -30,10 +45,10 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
         pred=as.numeric(predict(models[[m]], newdata=TestSet[, names(TestSet)!=resp.var])) )
     }
 
-    if (stack.method!='none'){
+    if (method!='none'){
       res$train[[length(models)+1]] <- models[[1]]$pred[, c('rowIndex', 'Resample', 'obs', 'pred')]
       res$test[[length(models)+1]] <- data.frame(obs = TestSet[, resp.var])
-      if (stack.method=='wt.avg'){
+      if (method=='wt.avg'){
         tmp <- unlist(lapply(models, function(x) x['pred']), F)
         res$train[[length(models)+1]]$pred <-
           Reduce('+', Map('*', lapply(tmp, function(x) x[, 'pred']) , stack.wt))
@@ -47,20 +62,20 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
         mtx.stack.train <- sapply(models, function(x) x$pred$pred)
         mtx.stack.test  <- sapply(res$test[1:length(models)], function(x) x$pred)
         colnames(mtx.stack.test) <- colnames(mtx.stack.train)
-        if (stack.method=='rf'){
+        if (method=='rf'){
           stack.model <- train(mtx.stack.train, models[[1]]$pred$obs,
-                               method = stack.method,
-                               trControl = control.stack,
-                               metric=weighted.by,
+                               method = method,
+                               trControl = trControl,
+                               metric=metric,
                                importance = T,
-                               tuneLength = tuneL)
+                               tuneLength = tuneLength)
         }
         else {
           stack.model <- train(mtx.stack.train, models[[1]]$pred$obs,
-                               method = stack.method,
-                               trControl = control.stack,
-                               metric=weighted.by,
-                               tuneLength = tuneL)
+                               method = method,
+                               trControl = trControl,
+                               metric=metric,
+                               tuneLength = tuneLength)
         }
         stack.wt <- as.matrix(varImp(stack.model)$importance, ncol=1)
         stack.wt <- stack.wt/sum(stack.wt)
@@ -80,11 +95,11 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
       )
     }
 
-    if (stack.method!='none'){
+    if (method!='none'){
       res$train[[length(models)+1]] <-
         models[[1]]$pred[, c('rowIndex', 'Resample', 'obs', 'pred', resp.lv)]
       res$test[[length(models)+1]] <- data.frame(obs = TestSet[, resp.var])
-      if (stack.method=='wt.avg'){
+      if (method=='wt.avg'){
         tmp <- unlist(lapply(models, function(x) x['pred']), F)
         res$train[[length(models)+1]][, resp.lv] <-
           Reduce('+', Map('*', lapply(tmp, function(x) x[, resp.lv]), stack.wt))
@@ -107,20 +122,20 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
         colnames(mtx.stack.test) <- colnames(mtx.stack.train) <-
           as.vector(sapply(names(models), paste0, paste0('.', lv.for.stack)))
 
-        if (stack.method=='rf'){
+        if (method=='rf'){
           stack.model <- train(mtx.stack.train, res$train[[1]]$obs,
-                               method = stack.method,
-                               trControl = control.stack,
-                               metric = weighted.by,
+                               method = method,
+                               trControl = trControl,
+                               metric = metric,
                                importance = T,
-                               tuneLength = tuneL)
+                               tuneLength = tuneLength)
         }
         else {
           stack.model <- train(mtx.stack.train, res$train[[1]]$obs,
-                               method = stack.method,
-                               trControl = control.stack,
-                               metric = weighted.by,
-                               tuneLength = tuneL)
+                               method = method,
+                               trControl = trControl,
+                               metric = metric,
+                               tuneLength = tuneLength)
         }
         stack.wt <- as.matrix(varImp(stack.model)$importance, ncol=1)
         stack.wt <- stack.wt/sum(stack.wt)
@@ -140,7 +155,7 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
     }
   }
 
-  if (stack.method=='none'){
+  if (method=='none'){
     names(res$train) <- names(res$test) <- names(models)
   }
   else {
@@ -148,7 +163,7 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, stack.method='none',
   }
 
   out <- list(prediction=res, weight=stack.wt)
-  if (stack.method=='wt.avg') { out$stack.model <- 'weighted average' }
-  else if (!stack.method %in% c('none','wt.avg')) { out$stack.model <- stack.model }
+  if (method=='wt.avg') { out$stack.model <- 'weighted average' }
+  else if (!method %in% c('none','wt.avg')) { out$stack.model <- stack.model }
   return(out)
 }
