@@ -1,10 +1,12 @@
 #' Variable importance for repeated nested CV.
+#'
+#' @param rNCV.obj The rNCV object returned by the function \code{rNCV()}.
 
-varImp_rNCV <- function(rncv.obj){
-  names(rncv.obj$var.imp)[4] <- 'importance'
-  summ <- setNames(aggregate(importance~variable, data=rncv.obj$var.imp, mean), c('variable','mean'))
+varImp_rNCV <- function(rNCV.obj){
+  names(rNCV.obj$var.imp)[4] <- 'importance'
+  summ <- setNames(aggregate(importance~variable, data=rNCV.obj$var.imp, mean), c('variable','mean'))
   summ <- merge(summ,
-                setNames(aggregate(importance~variable, data=rncv.obj$var.imp, sd), c('variable','se')),
+                setNames(aggregate(importance~variable, data=rNCV.obj$var.imp, sd), c('variable','se')),
                 by='variable')
   summ <- summ[order(summ$mean),]
   p <- barplot(summ$mean, horiz=T, names.arg=summ$variable, las=1, xlim=c(0,100))

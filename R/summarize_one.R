@@ -3,25 +3,12 @@
 #' @param data_folder The folder where the results from the rNCV are contained.
 #' @param figure_title The name you would like for the generated figures.
 #' @param include_pdp Set to TRUE if you would like to generate partial dependence plots. \strong{WARNING:} Setting this option to TRUE will significantly increase run time.
-#' @param rdata_prefix Lable of output file name. Make sure this is the same label as specified in \code{predict_one()}.
+#' @param rdata_prefix Label of output file name. Make sure this is the same label as specified in \code{predict_one()}.
 #' @export
 
-summarize_one <- function(data_folder, rdata_prefix, figure_title, include_pdp = FALSE){
-  #faith_pd.results.all.RData
-  load(paste0(data_folder, rdata_prefix, '.results.RData'))
-  #print('Variables Used')
-  #print(predictor_vars)
+summarize_one <- function(file_name, figure_title, include_pdp = FALSE){
+  load(file_name)
 
-  #first, get a correlation matrix with all variables
-  #library(corrplot)
-  #corrM <- cor(faith_pd_data, use = 'pairwise.complete', method = 'spearman')
-  #png('UnivariateCorrelationMatrix.png', width = 5000, height = 5000)
-  #corrplot(corrM, method="number", type="upper", col=colorRampPalette(c("blue","white","red"))(200), cl.pos = "n")
-  #dev.off()
-
-
-  #summary(res.rncv$perf.by.fold)
-  #summary(res.rncv$perf.comb)
   summ <- rNCV.perf.summ(res.rncv)
 
   #get classical r^2, as 1-SSresid/SStotal, to compare with Henry's/caret's output

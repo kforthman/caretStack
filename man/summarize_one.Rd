@@ -4,14 +4,16 @@
 \alias{summarize_one}
 \title{Plot ML Results and Summary}
 \usage{
-summarize_one(rdata_prefix, figure_title, include_pdp = FALSE)
+summarize_one(file_name, figure_title, include_pdp = FALSE)
 }
 \arguments{
-\item{rdata_prefix}{Lable of output file name. Make sure this is the same label as specified in \code{predict_one()}.}
-
 \item{figure_title}{The name you would like for the generated figures.}
 
 \item{include_pdp}{Set to TRUE if you would like to generate partial dependence plots. \strong{WARNING:} Setting this option to TRUE will significantly increase run time.}
+
+\item{data_folder}{The folder where the results from the rNCV are contained.}
+
+\item{rdata_prefix}{Label of output file name. Make sure this is the same label as specified in \code{predict_one()}.}
 }
 \description{
 Plot ML Results and Summary

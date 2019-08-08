@@ -4,7 +4,10 @@
 \alias{varImp_rNCV}
 \title{Variable importance for repeated nested CV.}
 \usage{
-varImp_rNCV(rncv.obj)
+varImp_rNCV(rNCV.obj)
+}
+\arguments{
+\item{rNCV.obj}{The rNCV object returned by the function \code{rNCV()}.}
 }
 \description{
 Variable importance for repeated nested CV.

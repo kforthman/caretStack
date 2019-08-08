@@ -6,6 +6,9 @@
 \usage{
 rNCV.perf.summ(rNCV.obj)
 }
+\arguments{
+\item{rNCV.obj}{The rNCV object returned by the function \code{rNCV()}.}
+}
 \description{
-Summarize model performance in rNCV
+Gives a summary of model performance. Returns average of each metric specified in rNCV (whether MAE, RMSE, R^2, or something else) for both the training and testing set for each method.
 }
