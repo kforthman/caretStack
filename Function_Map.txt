@@ -1,0 +1,62 @@
+
+=========================================
+ML.similarity
+ -- calls --
+reorder_cormat
+
+=========================================
+modelPerf.summ
+ -- calls --
+modelPerf
+
+=========================================
+pdNCV
+ -- calls --
+pdEst
+
+=========================================
+PermuPerf.rNCV
+ -- calls --
+rNCV.perm
+
+=========================================
+permuPred
+ -- calls --
+caretModels,
+is.nan.data.frame,
+modelPerf.summ,
+PredVal
+
+=========================================
+predict_one
+ -- calls --
+rNCV
+
+=========================================
+rNCV.perm
+ -- calls --
+caretModels,
+modelPerf,
+PredVal
+
+=========================================
+rNCV
+ -- calls --
+caretModels,
+comb_rep,
+modelPerf,
+modelPerf.summ,
+PredVal,
+VarImp
+
+=========================================
+summarize_one
+ -- calls --
+pdNCV,
+predict_one,
+rNCV.perf.summ,
+rNCV,
+varImp_rNCV,
+VarImp
+
+=========================================
