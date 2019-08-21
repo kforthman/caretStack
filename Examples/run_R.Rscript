@@ -1,0 +1,4 @@
+#!/opt/apps/core/R/3.5.1/lib64/R/bin/Rscript
+
+source('Code/run_ML-HB_slopes.R')
+
