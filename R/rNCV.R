@@ -51,6 +51,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
         test.set <- knnImputation(test.set)
       }
 
+      # Inner loop
       # Step 1. Build base learners
       # (upper right in flow chart)
       # Outputs a file for each resulting fold.
