@@ -4,9 +4,10 @@
 #' @param figure_title The name you would like for the generated figures.
 #' @param include_pdp Set to TRUE if you would like to generate partial dependence plots. \strong{WARNING:} Setting this option to TRUE will significantly increase run time.
 #' @param rdata_prefix Label of output file name. Make sure this is the same label as specified in \code{predict_one()}.
+#' @param ourDir If you would like to save the output files into somewhere other than the working directory, specify that here. Make sure the folder name ends with '/'.
 #' @export
 
-summarize_one <- function(file_name, figure_title, include_pdp = FALSE){
+summarize_one <- function(file_name, figure_title, rdata_prefix, outDir = '', include_pdp = FALSE){
   load(file_name)
 
   summ <- rNCV.perf.summ(res.rncv)
@@ -46,15 +47,11 @@ summarize_one <- function(file_name, figure_title, include_pdp = FALSE){
   }
   ## Loading required package: ggpu
 
+  write.csv(summ[summ$metric==metrics[3],], paste0(outDir, rdata_prefix,'_summary.csv'))
+
   print(annotate_figure(ggarrange(p[[1]], p[[2]], p[[3]], ncol=3), top = text_grob(paste(figure_title), color = 'red')))
 
-
-  png(paste0('../Plots/varimp-', output_label, '.png'), width = 2000, height = 4000)
-  par(mar = c(2,15,2,2))
   varimp_vals <- varImp_rNCV(res.rncv)
-  dev.off()
-
-
 
   #how are univariate correlations related to varimp values?
   corrM <- cor(data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))], use = 'pairwise.complete')
@@ -79,10 +76,12 @@ summarize_one <- function(file_name, figure_title, include_pdp = FALSE){
 
   #print("Variables with Highest Importance")
   #print(head(combined_vals[seq(dim(combined_vals)[1],1), c('variable', 'ML_Varimp', 'r2')]))
-  write.csv(combined_vals[seq(dim(combined_vals)[1],1), c('variable', 'ML_Varimp', 'r', 'r2')], paste0('../Output/', output_label, '_VarImp.csv'), row.names = FALSE)
+  varimp <- combined_vals[seq(dim(combined_vals)[1],1), c('variable', 'ML_Varimp', 'r', 'r2')]
+  write.csv(varimp, paste0(outDir, rdata_prefix, '_VarImp.csv'), row.names = FALSE)
   plot(combined_vals$r2, combined_vals$ML_Varimp, xlab = 'Univariate r^2', ylab = 'ML Variable Importance',
        main = paste('r =', round(cor_val, digits = 2)))
 
+  varimp_plot(varimp)
 
   # choose some predictors for pd plots
   sel.var <- combined_vals$variable[length(combined_vals$variable):(length(combined_vals$variable) - 3)]
@@ -90,7 +89,7 @@ summarize_one <- function(file_name, figure_title, include_pdp = FALSE){
 
   if (include_pdp){
     pdNCV(sel.var, resp.var=var_to_predict, nRep=5, nFolds=5,
-          dir.path='../Output/.', file.root=paste0('.', output_label), res.rncv, stack.wt=NULL)
+          dir.path=paste0(outDir, '.'), file.root=paste0('.', rdata_prefix,'-pdpFile'), res.rncv, stack.wt=NULL)
   }
 
   scatter_data <- cbind(rowMeans(res.rncv$y.pred.comb), data.rncv[, c('LC_Category', var_to_predict)])

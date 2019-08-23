@@ -123,6 +123,8 @@ into the terminal.
 
 Now is a good time for a coffee break... this may take a few minutes! ☕️
 
+`predict_one()` will create a hidden file containing the results from each fold and repeat. The final file created is called 'your_prefix.results.RData'.
+
 
 ### Step 5: Summary and Visualization of the results.
 When the prediction job is finished, you should be ready to view your results! This is simple with the function `summarize_one`.
