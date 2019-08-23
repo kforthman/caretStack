@@ -18,7 +18,6 @@
 #' @param predictor_var_file_list list of filenames. Each file is expected to contain a list of T1000 variable data names that will be included in the analysis as predictors.
 #' @param rdata_prefix label to put in output file names
 #' @inheritParams rNCV
-#' @importFrom DMwR knnImputation
 #' @examples
 #' prepped_data <- read.csv('Data/prepped_hc_data.csv', stringsAsFactors = F)
 #' prepped_data[prepped_data$LC_Category == 'Dep', 'LC_Category'] <- 'Dep+Anx'
