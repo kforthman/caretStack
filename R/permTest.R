@@ -1,4 +1,6 @@
 #' No Description.
+#'
+#' Conducts a permutation test on model performance
 
 # NOTE: my notation of "train.by.fold" refers to the "testing" folds
 # i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)

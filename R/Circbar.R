@@ -1,5 +1,7 @@
 #' Create a circular bar plot
 #'
+#' Was created to display var importance plots
+#'
 #' @param mydata The dataset that you want to plot.
 #' @param graphtitle The title of the plot.
 

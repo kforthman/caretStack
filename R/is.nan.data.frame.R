@@ -1,5 +1,7 @@
 #' Check NaN for Data.Frame
 #'
+#' Used for performance in training set.
+#'
 #' @inheritParams base::is.finite
 #' @examples
 #' data <- data.frame(
@@ -11,5 +13,5 @@
 #' is.nan.data.frame(data)
 
 is.nan.data.frame <- function(x){
-  do.call(cbind, lapply(x, is.nan))
+  do.call(cbind, lapply(x, is.nan)) # do.call is good for combining list of matricies
 }

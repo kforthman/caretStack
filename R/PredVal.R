@@ -9,10 +9,16 @@
 #'
 #' For consistency purpose (with stacking predictions), I use \code{defaultSummary(pred)}
 #'
+#' In PredVal, you can
+#' \enumerate{
+#' \item specify a stacking method
+#' \item specify a weight for each ML algorithm
+#' }
+#'
 #' @param models
 #' @param TestSet
 #' @param resp.var
-#' @param ref.lv ???
+#' @param ref.lv reference level for categorical variables.
 #' @param stack.wt ???
 #' @inheritParams caret::train
 #'

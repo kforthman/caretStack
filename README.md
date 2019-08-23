@@ -23,7 +23,27 @@ ssh submit0
 module load R
 R
 install.packages('devtools')
+# You may need to select a mirror. I tend to use the one for Kansas. Type the number and press 'enter'.
+# Once you select your mirror, it may take a couple of minutes to look like it's doing anything,
+# so just be patient.
 devtools::install_github("kforthman/caretStack")
+# This step is only to check the package installed correctly:
+library(caretStack)
+```
+
+If when you try `library(caretStack)` you have trouble with the package `rlang`, 
+enter the following commands while still in the R module in the terminal:
+```
+remove.packages('rlang')
+install.packages('rlang')
+```
+Now, restart the terminal.
+Make sure that this solved the problem by re-starting R in submit0:
+```
+ssh submit 0
+# (type your password and hit 'enter')
+module load R
+R
 library(caretStack)
 ```
 
@@ -39,6 +59,7 @@ Most of the code you need to execute the rNCV is already written for you. All yo
 Argument definitions are in the documentation. Here is an example of how you might write out this function:
 
 ```
+library(caretStack)
 your_data <- read.csv('your_data.csv')
 predict_one(your_data, 'your_target_variables_name', c('your_predictors.csv'), 'your_prefix')
 ```
@@ -56,7 +77,7 @@ replacing 'run_predict_one.R' with whatever you named your file.
 
 Now save the text file as 'run_R.Rscript'.
 
-Create a second text file. Copy and paste into it the following text, replacing the text 'your_directory' with your desired path.
+Create a second text file. Copy and paste into it the following text, replacing the text 'YOUR_DIRECTORY' with your desired path and 'YOUR_JOB_NAME' with a short name describing your job.
 
 ```
 #!/bin/bash
@@ -65,11 +86,11 @@ Create a second text file. Copy and paste into it the following text, replacing 
 #SBATCH --ntasks=5
 #SBATCH --mem=30000
 #SBATCH --nodes=1
-#SBATCH --output=/your_directory/out.log
-#SBATCH --error=/your_directory/err.log
-#SBATCH --job-name=ML-HB_slope-est
+#SBATCH --output=/YOUR_DIRECTORY/out.log
+#SBATCH --error=/YOUR_DIRECTORY/err.log
+#SBATCH --job-name=YOUR_JOB_NAME
 #SBATCH --mail-type=NONE
-#SBATCH --workdir=/your_directory
+#SBATCH --workdir=/YOUR_DIRECTORY
 #SBATCH --time=3-0
 #
 #################################################

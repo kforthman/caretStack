@@ -1,4 +1,7 @@
-#' No Description.
+#' No title
+#'
+#' This code was added for one of Robin's post-docs
+#' (this function is not included in ML examples)
 
 ML.similarity <- function(models){
   cormat <- round(modelCor(resamples(models)), 2)

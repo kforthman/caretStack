@@ -1,6 +1,8 @@
 #' Convert categorical predictors to dummy coding
 #'
 #' A function to convert categorical predictors to dummy coding.
+#' Generates dummy code.
+#'
 #' @param data
 #' @param var.list
 #' @param ref.list

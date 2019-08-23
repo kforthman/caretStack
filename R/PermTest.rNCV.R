@@ -1,4 +1,7 @@
 #' No Description.
+#'
+#' Uses results from permTest() for finding significance of model performance. This function may be time-consuming.
+#' See lines 589 - 605 for an example.
 
 PermTest.rNCV <- function(rncv.obj, perf.perm, figure){
   metric.names <- names(rncv.obj$perf.ensemble)

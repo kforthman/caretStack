@@ -1,5 +1,8 @@
 #' Repeated, Nested Cross-Validation
 #'
+#' Supports classification and regression.
+#' Note: only continuous variables are expected to be used as predictors. It is assumed that there are a sufficient number of subjects in each category.
+#'
 #' @param data The data frame containing the training set.
 #' @param nRep Number of times nCV is repeated.
 #' @param nFolds.outer Number of outer folds
