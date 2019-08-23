@@ -121,6 +121,8 @@ sbatch < run_PredictionJob.ssub
 
 into the terminal.
 
+Now is a good time for a coffee break... this may take a few minutes! ☕️
+
 
 ### Step 5: Summary and Visualization of the results.
 When the prediction job is finished, you should be ready to view your results! This is simple with the function `summarize_one`.

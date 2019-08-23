@@ -17,6 +17,7 @@
 #' @param var_to_predict The column name of the target.
 #' @param predictor_var_file_list list of filenames. Each file is expected to contain a list of T1000 variable data names that will be included in the analysis as predictors.
 #' @param rdata_prefix label to put in output file names
+#' @param ourDir If you would like to save the output files into somewhere other than the working directory, specify that here. Make sure the folder name ends with '/'.
 #' @inheritParams rNCV
 #' @examples
 #' prepped_data <- read.csv('Data/prepped_hc_data.csv', stringsAsFactors = F)
@@ -37,7 +38,7 @@
 #' predict_one(prepped_data, 'lme_slope_simple'  , c('Data/all_vars-np.csv'),   'lme_slope_simple_vars-np')
 #' @export
 
-predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_prefix,
+predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_prefix, outDir = '',
                         nFolds.outer=5,
                         methods=c('svmRadial', 'ranger', 'glmnet'),
                         metric='RMSE'){
@@ -108,7 +109,7 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
                    tuneLength=7,
                    preProcess=c('center', 'scale'),
                    metric=metric,
-                   dir.path='Output/.',
+                   dir.path=paste0(outDir, '.'),
                    file.root=paste0('.', rdata_prefix),
                    stack.method='wt.avg',
                    weighted.by='RMSE',
@@ -119,5 +120,5 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
 
 
   #save results to a .rdata file, so we can load them locally to make plots
-  save(data.rncv, res.rncv, predictor_vars, var_to_predict, rdata_prefix, file = paste0('Output/', rdata_prefix, '.results.RData'))
+  save(data.rncv, res.rncv, predictor_vars, var_to_predict, rdata_prefix, file = paste0(outDir, rdata_prefix, '.results.RData'))
 }
