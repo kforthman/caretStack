@@ -10,6 +10,7 @@
 summarize_one <- function(file_name, figure_title, rdata_prefix, outDir = '', include_pdp = FALSE){
   load(file_name)
 
+  # Get a summary of model performance
   summ <- rNCV.perf.summ(res.rncv)
 
   #get classical r^2, as 1-SSresid/SStotal, to compare with Henry's/caret's output
@@ -31,25 +32,15 @@ summarize_one <- function(file_name, figure_title, rdata_prefix, outDir = '', in
   new_row <- data.frame(dataset = 'test', metric = 'Rsquared', method = 'StackClscR2', m = mean_r2, se = se_r2)
   summ <- rbind(summ, new_row)
 
-  metrics <- c('MAE', 'RMSE', 'Rsquared')
-  p <- NULL
-  for (i in 1:length(metrics)){
-    p.tmp <- ggplot(data = summ[summ$metric==metrics[i],],
-                    aes(x = method, y = m, fill=dataset)) +
-      geom_bar(stat = "identity", position = position_dodge(0.9)) +
-      geom_errorbar(aes(ymin = m - se, ymax = m + se),
-                    position = position_dodge(0.9), width = 0.2) +
-      labs(x = "", y = "") + coord_flip() +
-      ggtitle(metrics[i]) + theme(legend.position="bottom", legend.title = element_blank())
 
-    #print(p.tmp)
-    p[[i]] <- p.tmp
-  }
-  ## Loading required package: ggpu
+  # Save the summary
+  #write.csv(summ[summ$metric==metrics[3],], paste0(outDir, rdata_prefix,'_summary.csv'))
+  write.csv(summ, paste0(outDir, rdata_prefix,'_summary.csv'))
 
-  write.csv(summ[summ$metric==metrics[3],], paste0(outDir, rdata_prefix,'_summary.csv'))
+  # new plot function
+  summary_plot(summ, figure_title)
 
-  print(annotate_figure(ggarrange(p[[1]], p[[2]], p[[3]], ncol=3), top = text_grob(paste(figure_title), color = 'red')))
+
 
   varimp_vals <- varImp_rNCV(res.rncv)
 
@@ -78,10 +69,11 @@ summarize_one <- function(file_name, figure_title, rdata_prefix, outDir = '', in
   #print(head(combined_vals[seq(dim(combined_vals)[1],1), c('variable', 'ML_Varimp', 'r2')]))
   varimp <- combined_vals[seq(dim(combined_vals)[1],1), c('variable', 'ML_Varimp', 'r', 'r2')]
   write.csv(varimp, paste0(outDir, rdata_prefix, '_VarImp.csv'), row.names = FALSE)
+
   plot(combined_vals$r2, combined_vals$ML_Varimp, xlab = 'Univariate r^2', ylab = 'ML Variable Importance',
        main = paste('r =', round(cor_val, digits = 2)))
 
-  varimp_plot(varimp)
+  #varimp_plot(varimp)
 
   # choose some predictors for pd plots
   sel.var <- combined_vals$variable[length(combined_vals$variable):(length(combined_vals$variable) - 3)]

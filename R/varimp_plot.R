@@ -1,9 +1,11 @@
 #' Plots variable importance from ML model
 #'
 #' @param this_VarImp Use the file exported from the rNCV function by the name '[your_prefix]_VarImp.csv'
+#' @export
 
 varimp_plot <- function(this_VarImp){
   max_this_VarImp <- max(this_VarImp$ML_Varimp)
+  n <- dim(this_VarImp)[1]
 
   gg <- ggplot(this_VarImp, aes(x = reorder(variable, ML_Varimp))) +
     coord_flip() +
@@ -16,7 +18,9 @@ varimp_plot <- function(this_VarImp){
 
     theme(legend.position = "right",legend.justification = c(0, 1),
           axis.text.x = element_blank(),
-          plot.margin = unit(c(1,1,1,1), "cm"))+
+          plot.margin = unit(c(1,1,1,1), "cm")
+          # ,aspect.ratio = n/10
+          )+
     scale_fill_manual(values=c("pink","lightblue", "grey"))+
     ylim(0,max_this_VarImp + 5)
 
