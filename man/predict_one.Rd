@@ -5,8 +5,8 @@
 \title{Wrapper for executing the rNCV function.}
 \usage{
 predict_one(dset, var_to_predict, predictor_var_file_list, rdata_prefix,
-  nFolds.outer = 5, methods = c("svmRadial", "ranger", "glmnet"),
-  metric = "RMSE")
+  outDir = "", nFolds.outer = 5, methods = c("svmRadial", "ranger",
+  "glmnet"), metric = "RMSE")
 }
 \arguments{
 \item{dset}{the dataset to use in matrix form including the predictors, the target, participant id's, and LifeChart (LC) categories.}
@@ -30,6 +30,8 @@ used (via the \code{summaryFunction} argument in
 match one of the arguments. If it does not, a warning is issued
 and the first metric given by the \code{summaryFunction} is
 used. (NOTE: If given, this argument must be named.)}
+
+\item{ourDir}{If you would like to save the output files into somewhere other than the working directory, specify that here. Make sure the folder name ends with '/'.}
 }
 \description{
 Performs repeated nested cross-validation on the input dataset.

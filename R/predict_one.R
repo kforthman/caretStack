@@ -65,7 +65,7 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
   dset <- dset[to_keep,]
 
   if(sum(to_keep)>0){
-    warning(paste0(sum(to_keep), " participants have been removed because more than 30% of their predictor variables are missing. These are the participants that were removed:\n", paste(dset[!to_keep,'id'], collapse = '\n')))
+    warning(paste0(sum(!to_keep), " participants have been removed because more than 30% of their predictor variables are missing. These are the participants that were removed:\n", paste(dset[!to_keep,'id'], collapse = '\n')))
   }
   # get predictor variables on their own
   # will keep id and LC_Category--for plotting later, and possibly merging results with other data if needed

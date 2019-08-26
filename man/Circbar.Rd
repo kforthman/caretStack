@@ -12,5 +12,5 @@ Circbar(mydata, graphtitle)
 \item{graphtitle}{The title of the plot.}
 }
 \description{
-Create a circular bar plot
+Was created to display var importance plots
 }

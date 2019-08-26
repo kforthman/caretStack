@@ -7,5 +7,6 @@
 PermTest.rNCV(rncv.obj, perf.perm, figure)
 }
 \description{
-No Description.
+Uses results from permTest() for finding significance of model performance. This function may be time-consuming.
+See lines 589 - 605 for an example.
 }

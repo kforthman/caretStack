@@ -11,7 +11,7 @@
     vectors.}
 }
 \description{
-Check NaN for Data.Frame
+Used for performance in training set.
 }
 \examples{
 data <- data.frame(

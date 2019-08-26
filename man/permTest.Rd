@@ -7,5 +7,5 @@
 permTest(perf.org.list, final, perf.permu, figure = T)
 }
 \description{
-No Description.
+Conducts a permutation test on model performance
 }

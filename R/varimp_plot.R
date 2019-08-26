@@ -1,9 +1,12 @@
+#' Plots variable importance from ML model
+#'
+#' @param this_VarImp Use the file exported from the rNCV function by the name '[your_prefix]_VarImp.csv'
+
 varimp_plot <- function(this_VarImp){
   max_this_VarImp <- max(this_VarImp$ML_Varimp)
 
   gg <- ggplot(this_VarImp, aes(x = reorder(variable, ML_Varimp))) +
     coord_flip() +
-
     geom_col(aes(y = ML_Varimp, fill = "Variable Importance"), alpha = .9)+
     geom_text(aes(y = ML_Varimp, label = round(ML_Varimp, 2)), hjust = 0)+
 

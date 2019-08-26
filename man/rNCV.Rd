@@ -14,7 +14,7 @@ rNCV(data, resp.var, ref.lv = NULL, nRep, nFolds.outer, methods,
 
 \item{resp.var}{Indicate the name of the column in the training set that contains the response variable.}
 
-\item{ref.lv}{???}
+\item{ref.lv}{reference level for categorical variables.}
 
 \item{nRep}{Number of times nCV is repeated.}
 
@@ -68,5 +68,6 @@ used. (NOTE: If given, this argument must be named.)}
 \item{control.stack}{???}
 }
 \description{
-Repeated, Nested Cross-Validation
+Supports classification and regression.
+Note: only continuous variables are expected to be used as predictors. It is assumed that there are a sufficient number of subjects in each category.
 }

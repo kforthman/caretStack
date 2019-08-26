@@ -2,10 +2,11 @@
 % Please edit documentation in R/ML.similarity.R
 \name{ML.similarity}
 \alias{ML.similarity}
-\title{No Description.}
+\title{No title}
 \usage{
 ML.similarity(models)
 }
 \description{
-No Description.
+This code was added for one of Robin's post-docs
+(this function is not included in ML examples)
 }

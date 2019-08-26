@@ -8,4 +8,5 @@ dummy.code.data(data, var.list, ref.list)
 }
 \description{
 A function to convert categorical predictors to dummy coding.
+Generates dummy code.
 }

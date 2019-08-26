@@ -9,7 +9,7 @@ PredVal(models, TestSet, resp.var, ref.lv = NULL, method = "none",
   tuneLength = NULL)
 }
 \arguments{
-\item{ref.lv}{???}
+\item{ref.lv}{reference level for categorical variables.}
 
 \item{method}{A string specifying which classification or
 regression model to use. Possible values are found using
@@ -56,4 +56,10 @@ To assess model performance in the training and testing sets, we need:
 }
 \details{
 For consistency purpose (with stacking predictions), I use \code{defaultSummary(pred)}
+
+In PredVal, you can
+\enumerate{
+\item specify a stacking method
+\item specify a weight for each ML algorithm
+}
 }

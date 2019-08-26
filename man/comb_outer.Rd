@@ -8,4 +8,6 @@ comb_outer(LL1, LL2)
 }
 \description{
 A function to combine results from parallelized outer loop.
+This function is for parallel computing and is used by rNCV. It indicates how to combine the results from parallel computing in outer loop.
+It performs parallel computing at repeat step.
 }
