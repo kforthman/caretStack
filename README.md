@@ -123,17 +123,16 @@ into the terminal.
 
 Now is a good time for a coffee break... this may take a few minutes! ☕️
 
-`predict_one()` will create a hidden file containing the results from each fold and repeat. The final file created is called 'your_prefix.results.RData'.
+`predict_one()` will create a hidden file containing the results from each fold and repeat. The final file created is called '*your_prefix*.results.RData'.
 
 
 ### Step 5: Summary and Visualization of the results.
-When the prediction job is finished, you should be ready to view your results! This is simple with the function `summarize_one`.
+When the prediction job is finished, you should be ready to view your results! This is simple using the example file 'Examples/summary.Rmd'.
+Place a copy of this example file into your working directory. Now, fill in the blank on line 12 with *your_prefix* (from earlier). Then knit this file by clicking the icon that looks like a blue ball of yarn, located at the top of your screen.
 
-In a fresh R script, simply type
+![Knit Icon](/Images/knit.png)
 
-```
-summarize_one('your_prefix', 'your_plot_title')
-```
+A file will automatically be created in the working directory that contains the results called 'summary.html'.
 
 ## So, what does caretStack *do*?
 **caretStack** uses repeated nested cross-validation (rNCV) to tune the parameters of a stacked machine learning (ML) model. We say the model is 'stacked' because the prediction is a weighted average of multiple machine learning methods, called base learners. Each method is weighted by it's fit to the data. This fit is determined by the rNCV.
