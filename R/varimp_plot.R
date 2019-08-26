@@ -1,5 +1,6 @@
 #' Plots variable importance from ML model
 #'
+#' This function plots variable importance.
 #' @param this_VarImp Use the file exported from the rNCV function by the name '[your_prefix]_VarImp.csv'
 #' @export
 

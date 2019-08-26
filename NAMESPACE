@@ -2,4 +2,9 @@
 
 export(predict_one)
 export(summarize_one)
+export(summary_plot)
+export(varimp_plot)
 importFrom(doBy,summaryBy)
+importFrom(ggpubr,annotate_figure)
+importFrom(ggpubr,ggarrange)
+importFrom(ggpubr,text_grob)
