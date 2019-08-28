@@ -19,6 +19,7 @@
 #' @param rdata_prefix label to put in output file names
 #' @param ourDir If you would like to save the output files into somewhere other than the working directory, specify that here. Make sure the folder name ends with '/'.
 #' @inheritParams rNCV
+#' @importFrom doParallel registerDoParallel
 #' @examples
 #' prepped_data <- read.csv('Data/prepped_hc_data.csv', stringsAsFactors = F)
 #' prepped_data[prepped_data$LC_Category == 'Dep', 'LC_Category'] <- 'Dep+Anx'
@@ -85,7 +86,7 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
   data.rncv <- data.rncv[complete.cases(data.rncv),]
 
   #will use 5 cores, could change this
-  library(doParallel); cl = 2; registerDoParallel(cl)
+  cl = 2; registerDoParallel(cl)
 
   #set up parameters for the inner fold of cross validation
   ctrl.reg <- trainControl(method = 'cv',               # k-fold cross-validation

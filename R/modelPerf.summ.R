@@ -1,11 +1,11 @@
 #' No Description.
-
+#'
+#' @import plyr
 # NOTE: my notation of "train.by.fold" refers to the "testing" folds
 # i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)
 #      each training set is further divided into k parts for parameter optimization (inner loop)
 
 modelPerf.summ <- function(predval.list){
-  library(plyr)
   perf.train <- lapply(predval.list$train, function(x) ddply(x, .(Resample), modelPerf))
   perf.test <- sapply(predval.list$test , modelPerf)
   m <- data.frame(sapply(perf.train, function(x) apply(x[,-1], 2, mean, na.rm=T)))
