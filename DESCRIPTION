@@ -9,4 +9,3 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1.9000
 Imports: doBy, ggpubr, dplyr, plyr
-  
