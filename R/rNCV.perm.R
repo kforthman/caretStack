@@ -1,11 +1,11 @@
-#' rNCV.perm is identical to rNCV except %do% instead of %dopar%
+#' rNCV.perm is identical to rNCV except do instead of dopar
 #'
 #' 2018-08-07 version: use ensemble predictions from rNCV for permutation ###
 #'
 #' Parallel at k-fold CV (previous version in Replicates) ##
 #'
 #' rNCV.perm is identical to rNCV except
-#' (1) %do% instead of %dopar% (parallel for permutation replicates)
+#' (1) do instead of dopar (parallel for permutation replicates)
 #' (2) res contains only predictive values/probabilities (i.e. y.pred.comb)
 #' (3) use ensemble predictions for model performance in rNCV() and rNCV.perm()
 
