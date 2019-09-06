@@ -15,9 +15,6 @@
 #' \item specify a weight for each ML algorithm
 #' }
 #'
-#' @param models
-#' @param TestSet
-#' @param resp.var
 #' @param ref.lv reference level for categorical variables.
 #' @param stack.wt ???
 #' @inheritParams caret::train

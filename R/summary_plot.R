@@ -1,6 +1,5 @@
 #' Create a plot describing model performance
 #'
-#' @param summ
 #' @param metrics Which performance measures you would like to use.
 #' @param figure_title The title you would like for the figure
 #' @importFrom ggpubr annotate_figure text_grob ggarrange

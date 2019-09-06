@@ -1,8 +1,6 @@
 #' Combine results from parallelized replication (outer) loop
 #'
 #' A function to combine results from parallelized replication (outer) loop.
-#' @param LL1
-#' @param LL2
 
 comb_rep <- function(LL1, LL2){
   index.outer    <- cbind(LL1$index.outer,  LL2$index.outer )
