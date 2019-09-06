@@ -19,7 +19,9 @@
 #' @param rdata_prefix label to put in output file names
 #' @param ourDir If you would like to save the output files into somewhere other than the working directory, specify that here. Make sure the folder name ends with '/'.
 #' @inheritParams rNCV
+#'
 #' @importFrom doParallel registerDoParallel
+#'
 #' @examples
 #' prepped_data <- read.csv('Data/prepped_hc_data.csv', stringsAsFactors = F)
 #' prepped_data[prepped_data$LC_Category == 'Dep', 'LC_Category'] <- 'Dep+Anx'
@@ -99,8 +101,6 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
   #run the repeated nested cross validation
   #should change nRep and nFolds.outer to be larger, just set to 2 and 3 here so things run more quickly
   #may also add more/different ML.methods
-  library(broom)
-  library(plyr)
   res.rncv <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
                    resp.var = var_to_predict,
                    nRep=5,

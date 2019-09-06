@@ -14,6 +14,7 @@
 #' @param control.stack ???
 #' @inheritParams caretModels
 #' @inheritParams PredVal
+#' @importFrom dplyr do
 
 rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
                  trControl, tuneLength, preProcess, metric, dir.path, file.root,
