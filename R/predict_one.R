@@ -90,35 +90,72 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
   #will use 5 cores, could change this
   cl = 2; registerDoParallel(cl)
 
-  #set up parameters for the inner fold of cross validation
-  ctrl.reg <- trainControl(method = 'cv',               # k-fold cross-validation
-                           number = 5,                  # k = 5
-                           search = 'grid',             # use grid search over paramter space
-                           summaryFunction = defaultSummary,
-                           selectionFunction = 'oneSE', # select optimal tuning parameters by "one standard error" rule
-                           savePredictions = 'final')   # save predicted values of the final model
+  if(typeof(data.rncv[1,var_to_predict]) == "double" || typeof(data.rncv[1,var_to_predict]) == "integer"){
+    type.predictor <- "numerical"
+  }else{
+    type.predictor <- "categorical"
+  }
 
-  #run the repeated nested cross validation
-  #should change nRep and nFolds.outer to be larger, just set to 2 and 3 here so things run more quickly
-  #may also add more/different ML.methods
-  res.rncv <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
-                   resp.var = var_to_predict,
-                   nRep=5,
-                   nFolds.outer=nFolds.outer,
-                   methods=methods,
-                   trControl=ctrl.reg,
-                   tuneLength=7,
-                   preProcess=c('center', 'scale'),
-                   metric=metric,
-                   dir.path=paste0(outDir, '.'),
-                   file.root=paste0('.', rdata_prefix),
-                   stack.method='wt.avg',
-                   weighted.by='RMSE',
-                   stack.wt=NULL,
-                   control.stack=ctrl.reg
-  )
+  if(type.predictor == "numerical"){
+    #set up parameters for the inner fold of cross validation
+    ctrl.reg <- trainControl(method = 'cv',               # k-fold cross-validation
+                             number = 5,                  # k = 5
+                             search = 'grid',             # use grid search over paramter space
+                             summaryFunction = defaultSummary,
+                             selectionFunction = 'oneSE', # select optimal tuning parameters by "one standard error" rule
+                             savePredictions = 'final')   # save predicted values of the final model
+
+    #run the repeated nested cross validation
+    #should change nRep and nFolds.outer to be larger, just set to 2 and 3 here so things run more quickly
+    #may also add more/different ML.methods
+    res.rncv <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
+                     resp.var = var_to_predict,
+                     nRep=5,
+                     nFolds.outer=nFolds.outer,
+                     methods=methods,
+                     trControl=ctrl.reg,
+                     tuneLength=7,
+                     preProcess=c('center', 'scale'),
+                     metric=metric,
+                     dir.path=paste0(outDir, '.'),
+                     file.root=paste0('.', rdata_prefix),
+                     stack.method='wt.avg',
+                     weighted.by='RMSE',
+                     stack.wt=NULL,
+                     control.stack=ctrl.reg
+    )
+  } else if(type.predictor == "categorical"){
+    ctrl.reg <- trainControl(method = 'cv',
+                             number = 5,
+                             search = 'grid',
+                             summaryFunction = multiClassSummary,  # for more performance statistics
+                             selectionFunction = 'oneSE',
+
+                             savePredictions = 'final',
+
+                             classProbs=T,                         # only for classificaiton
+                             sampling='up',                        # for unbalanced classes
+                             allowParallel=T)
+
+    res <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
+                resp.var = var_to_predict,
+                ref.lv = data.rncv[1, var_to_predict],
+                nRep=5,
+                nFolds.outer=nFolds.outer,
+                methods = methods,
+                trControl = ctrl.reg,
+                tuneLength = 7,
+                preProcess = c('center', 'scale'),
+                metric = metric,
+                dir.path = paste0(outDir, '.'),
+                file.root = paste0('.', rdata_prefix),
+                stack.method = 'wt.avg',
+                weighted.by = 'AUC',
+                stack.w = NULL,
+                control.stack = ctrl.reg)
 
 
+  }
 
   #save results to a .rdata file, so we can load them locally to make plots
   save(data.rncv, res.rncv, predictor_vars, var_to_predict, rdata_prefix, file = paste0(outDir, rdata_prefix, '.results.RData'))
