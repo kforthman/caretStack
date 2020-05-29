@@ -90,7 +90,11 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
   #will use 5 cores, could change this
   cl = 2; registerDoParallel(cl)
 
-  if(typeof(data.rncv[1,var_to_predict]) == "double" || typeof(data.rncv[1,var_to_predict]) == "integer"){
+
+  if(is.factor(data.rncv[,var_to_predict])){
+    type.predictor <- "categorical"
+  }
+  else if(typeof(data.rncv[1,var_to_predict]) == "double" || typeof(data.rncv[1,var_to_predict]) == "integer"){
     type.predictor <- "numerical"
   }else{
     type.predictor <- "categorical"
