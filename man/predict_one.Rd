@@ -4,9 +4,16 @@
 \alias{predict_one}
 \title{Wrapper for executing the rNCV function.}
 \usage{
-predict_one(dset, var_to_predict, predictor_var_file_list, rdata_prefix,
-  outDir = "", nFolds.outer = 5, methods = c("svmRadial", "ranger",
-  "glmnet"), metric = "RMSE")
+predict_one(
+  dset,
+  var_to_predict,
+  predictor_var_file_list,
+  rdata_prefix,
+  outDir = "",
+  nFolds.outer = 5,
+  methods = c("svmRadial", "ranger", "glmnet"),
+  metric = "RMSE"
+)
 }
 \arguments{
 \item{dset}{the dataset to use in matrix form including the predictors, the target, participant id's, and LifeChart (LC) categories.}
@@ -26,7 +33,7 @@ be used to select the optimal model. By default, possible values
 are "RMSE" and "Rsquared" for regression and "Accuracy" and
 "Kappa" for classification. If custom performance metrics are
 used (via the \code{summaryFunction} argument in
-\code{\link{trainControl}}, the value of \code{metric} should
+\code{\link[caret]{trainControl}}, the value of \code{metric} should
 match one of the arguments. If it does not, a warning is issued
 and the first metric given by the \code{summaryFunction} is
 used. (NOTE: If given, this argument must be named.)}

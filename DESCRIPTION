@@ -7,5 +7,5 @@ Depends: R (>= 3.5.1), DMwR (>= 0.4.1), ggpubr (>= 0.2.1), ggplot2 (>= 3.2.1), d
 License: None
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1.9000
+RoxygenNote: 7.1.0
 Imports: dplyr (>= 0.8.3), plyr (>= 1.8.4)

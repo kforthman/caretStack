@@ -4,7 +4,7 @@
 \alias{plot.perf}
 \title{No Description.}
 \usage{
-plot.perf(model.perf, metrics = "all")
+\method{plot}{perf}(model.perf, metrics = "all")
 }
 \description{
 No Description.

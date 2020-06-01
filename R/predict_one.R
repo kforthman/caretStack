@@ -141,7 +141,7 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
                              sampling='up',                        # for unbalanced classes
                              allowParallel=T)
 
-    res <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
+    res.rncv <- rNCV(data = data.rncv[, !(names(data.rncv) %in% c('id', 'LC_Category'))],
                 resp.var = var_to_predict,
                 ref.lv = data.rncv[1, var_to_predict],
                 nRep=5,

@@ -4,8 +4,13 @@
 \alias{summarize_one}
 \title{Plot ML Results and Summary}
 \usage{
-summarize_one(file_name, figure_title, sum_prefix, outDir = "",
-  include_pdp = FALSE)
+summarize_one(
+  file_name,
+  figure_title,
+  sum_prefix,
+  outDir = "",
+  include_pdp = FALSE
+)
 }
 \arguments{
 \item{figure_title}{The name you would like for the generated figures.}

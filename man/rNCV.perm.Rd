@@ -4,10 +4,24 @@
 \alias{rNCV.perm}
 \title{rNCV.perm is identical to rNCV except do instead of dopar}
 \usage{
-rNCV.perm(data, resp.var, ref.lv = NULL, nRep, nFolds.outer, ML.methods,
-  control, tuneL, preProc.opt, metric, dir.path, file.root,
-  stack.method = "wt.avg", weighted.by = NULL, stack.wt = NULL,
-  control.stack = NULL)
+rNCV.perm(
+  data,
+  resp.var,
+  ref.lv = NULL,
+  nRep,
+  nFolds.outer,
+  ML.methods,
+  control,
+  tuneL,
+  preProc.opt,
+  metric,
+  dir.path,
+  file.root,
+  stack.method = "wt.avg",
+  weighted.by = NULL,
+  stack.wt = NULL,
+  control.stack = NULL
+)
 }
 \description{
 2018-08-07 version: use ensemble predictions from rNCV for permutation ###

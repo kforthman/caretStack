@@ -6,8 +6,7 @@
 Current PDP only allows stacking by weighted average.
 In classification, stacking by other learner uses different "predictor names".}
 \usage{
-pdNCV(sel.var, resp.var, nRep, nFolds, dir.path, file.root, rncv.obj,
-  stack.wt)
+pdNCV(sel.var, resp.var, nRep, nFolds, dir.path, file.root, rncv.obj, stack.wt)
 }
 \description{
 Partial-depedence plots using repeated nested CV objects

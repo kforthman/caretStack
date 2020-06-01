@@ -4,10 +4,23 @@
 \alias{permuPred}
 \title{No Description.}
 \usage{
-permuPred(TrainSet, TestSet, resp.var, ref.lv = NULL, control,
-  preProc.opt, tuneL, metric, methods, stack.method = "none",
-  weighted.by = NULL, stack.wt = NULL, control.stack = NULL,
-  select = "none", nPerm)
+permuPred(
+  TrainSet,
+  TestSet,
+  resp.var,
+  ref.lv = NULL,
+  control,
+  preProc.opt,
+  tuneL,
+  metric,
+  methods,
+  stack.method = "none",
+  weighted.by = NULL,
+  stack.wt = NULL,
+  control.stack = NULL,
+  select = "none",
+  nPerm
+)
 }
 \description{
 No Description.
