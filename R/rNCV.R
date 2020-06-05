@@ -16,6 +16,7 @@
 #' @inheritParams PredVal
 #' @importFrom dplyr do
 #' @importFrom plyr ddply
+#' @export
 
 rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
                  trControl, tuneLength, preProcess, metric, dir.path, file.root,
