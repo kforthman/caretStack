@@ -33,7 +33,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
   #}
 
   #do instead of dopar to make it work
-  res <- foreach(r=1:nRep, .combine=comb_rep, .packages='caret') %do% { #%dopar% {
+  res <- foreach(r=1:nRep, .combine=comb_rep, .packages='caret') %dopar% {
     index.outer <- createFolds(data[, resp.var], k=nFolds.outer, list=F)
 
     weight <- perf.by.fold <- var.imp <- perf.train <- perf.test <- NULL;
