@@ -1,6 +1,7 @@
 #' Variable importance for repeated nested CV.
 #'
 #' @param rNCV.obj The rNCV object returned by the function \code{rNCV()}.
+#' @export
 
 varImp_rNCV <- function(rNCV.obj){
   names(rNCV.obj$var.imp)[4] <- 'importance'

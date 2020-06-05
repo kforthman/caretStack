@@ -3,6 +3,7 @@
 #' Gives a summary of model performance. Returns average of each metric specified in rNCV (whether MAE, RMSE, R^2, or something else) for both the training and testing set for each method.
 #' @param rNCV.obj The rNCV object returned by the function \code{rNCV()}.
 #' @importFrom doBy summaryBy
+#' @export
 
 rNCV.perf.summ <- function(rNCV.obj){
   # perf is the training set. The last column (R squared) is removed.
