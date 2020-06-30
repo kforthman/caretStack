@@ -12,6 +12,7 @@
 #' @param weighted.by ???
 #' @param stack.wt ???
 #' @param control.stack ???
+#' @param save.PredVal Binary. Would you like to save the output from the PredVal function?
 #' @inheritParams caretModels
 #' @inheritParams PredVal
 #' @importFrom dplyr do
@@ -20,7 +21,7 @@
 
 rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
                  trControl, tuneLength, preProcess, metric, dir.path, file.root,
-                 stack.method='wt.avg', weighted.by=NULL, stack.wt=NULL, control.stack=NULL){
+                 stack.method='wt.avg', weighted.by=NULL, stack.wt=NULL, control.stack=NULL, save.PredVal = FALSE){
   ptm <- proc.time()
 
   if (class(data[, resp.var])=='factor')
@@ -33,7 +34,6 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
   #  control.stack$allowParallel <- F
   #}
 
-  #do instead of dopar to make it work
   res <- foreach(r=1:nRep, .combine=comb_rep, .packages='caret') %dopar% {
     index.outer <- createFolds(data[, resp.var], k=nFolds.outer, list=F)
 
@@ -72,6 +72,11 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
       # Done for each ML algorithm. PredVal combines the predictions from each method.
       pred.val <- PredVal(models, test.set, resp.var, ref.lv, stack.method,
                           weighted.by, stack.wt, control.stack, tuneLength)
+
+      if(save.PredVal){
+        save(pred.val,
+             file = paste0(dir.path, resp.var, '_', file.root, '_Rep_', r, '_fold_', k.outer, '-PredVal.rda'))
+      }
 
       if (length(methods)>1 & !stack.method %in% c('none'))
       { stack.model[[k.outer]] <- pred.val$stack.model

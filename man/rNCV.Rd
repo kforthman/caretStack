@@ -20,7 +20,8 @@ rNCV(
   stack.method = "wt.avg",
   weighted.by = NULL,
   stack.wt = NULL,
-  control.stack = NULL
+  control.stack = NULL,
+  save.PredVal = FALSE
 )
 }
 \arguments{
@@ -80,6 +81,8 @@ used. (NOTE: If given, this argument must be named.)}
 \item{stack.wt}{???}
 
 \item{control.stack}{???}
+
+\item{save.PredVal}{Binary. Would you like to save the output from the PredVal function?}
 }
 \description{
 Supports classification and regression.
