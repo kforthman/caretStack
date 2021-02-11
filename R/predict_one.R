@@ -46,6 +46,8 @@ predict_one <- function(dset, var_to_predict, predictor_var_file_list, rdata_pre
                         methods=c('svmRadial', 'ranger', 'glmnet'),
                         metric='RMSE'){
 
+  warning("predict_one() is deprecated. Please use predict_two().")
+
   # sets up list of predictor variable names
   predictor_vars <- c()
   for (f in predictor_var_file_list){

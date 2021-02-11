@@ -1,0 +1,326 @@
+---
+title: "caretStack Summary"
+output:
+  html_document:
+    theme: yeti
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(caretStack)
+library(RColorBrewer)
+library(scales)
+library(ROCR)
+
+# Remember to set these variables before running. You do not need to make any other changes to run the summary template.
+data <- read.csv('_____.csv', stringsAsFactors = F)
+predictor_var_file_list <- "_____.csv"
+outDir <- '_____'
+var_to_predict <- "_____"
+rNCVdir <- "_____"
+rdata_prefix <-"_____"
+targetType <- "_____"
+nRep <- _____
+nFolds.outer <- _____
+```
+
+## Target: `r var_to_predict`
+
+### Predictors: `r predictor_var_file_list`
+
+```{r}
+filename <- paste0(outDir, "/", var_to_predict, "_",rdata_prefix, '.results.RData')
+
+load(filename)
+
+if(targetType %in% c("binary", "categorical")){
+  this_plot_data <- table(data[,var_to_predict])
+  my_bar <- barplot(this_plot_data, 
+                    ylim = c(0, max(this_plot_data)*1.25), 
+                    col = brewer.pal(n = 10, name = "Spectral")[runif(1, 1, 10)])
+  text(my_bar, 
+       this_plot_data +  max(this_plot_data)*.05, 
+       this_plot_data)
+}else{
+  hist(data[,var_to_predict], 
+       xlab = var_to_predict, 
+       main = paste0("Histogram of ", var_to_predict),
+       col = brewer.pal(n = 10, name = "Spectral")[runif(1, 1, 10)])
+}
+```
+
+```{r}
+summ <- read.csv(paste0(outDir, "/", var_to_predict, "_", rdata_prefix,'_summary.csv'))
+
+unique(summ$metric)
+
+if("Sensitivity" %in% unique(summ$metric)){
+  metrics <- c("Sensitivity", "Specificity",  "AUC")
+}else if("Mean_Sensitivity" %in% unique(summ$metric)){
+  metrics <- c("Mean_Sensitivity", "Mean_Specificity",  "AUC")
+}else if("RMSE" %in% unique(summ$metric)){
+  metrics <- c("MAE","RMSE","Rsquared")}
+
+summary_plot(summ, "Summary", metrics = metrics)
+```
+
+```{r}
+filename <- paste0(outDir, "/", var_to_predict, "_", rdata_prefix, '_VarImp.csv')
+
+combined_vals <- read.csv(filename)
+
+ntest <- nrow(combined_vals)
+# Number of rejected hypotheses
+
+if(targetType == "binary"){
+  
+  plot.dset <- data.frame(variable = combined_vals$variable,
+                          cmpvar = combined_vals$cohens_d,
+                          pval = combined_vals$t_test_pval,
+                          col = combined_vals$greater.mean,
+                          ML_Varimp = combined_vals$ML_Varimp)
+  my.xlab <- "Cohens D"
+}else if(targetType == "numerical"){
+  combined_vals$col <- ifelse(combined_vals$r > 0, "positive", "negative")
+  my.xlab <- "R"
+  plot.dset <- data.frame(variable = combined_vals$variable,
+                          cmpvar = combined_vals$r,
+                          pval = combined_vals$pval,
+                          col = combined_vals$col,
+                          ML_Varimp = combined_vals$ML_Varimp)
+}else if(targetType == "categorical"){
+  plot.dset <- data.frame(variable = combined_vals$variable,
+                          cmpvar = NA,
+                          pval = NA,
+                          col = NA,
+                          ML_Varimp = combined_vals$ML_Varimp)
+}
+```
+
+```{r}
+cor_val <- cor(plot.dset$cmpvar , plot.dset$ML_Varimp)
+
+if(!targetType == "categorical"){
+plot(plot.dset$cmpvar^2, plot.dset$ML_Varimp, xlab = paste0(my.xlab, "^2"), ylab = 'ML Variable Importance',
+     main = paste('r =', round(cor_val, digits = 2)))
+}
+```
+
+```{r}
+fdr.adj <- p.adjust(plot.dset$pval, method = "fdr")
+bon.adj <- p.adjust(plot.dset$pval, method = "bonferroni")
+
+bon.thr <- 0.05/length(plot.dset$pval)
+fdr.thr <- sort(plot.dset$pval)[sum(fdr.adj<0.05)]
+
+
+par(mar = c(5, 4, 4, 4) + 0.1)
+
+my.gplot <- ggplot(plot.dset, 
+                   aes(x = variable, y = -log(pval), color = col)) +   
+  geom_segment(aes(x = variable , y = 0, xend = variable, yend = -log(pval)), size = 0.25) +
+  geom_hline(yintercept = -log(bon.thr)) + 
+  geom_hline(yintercept = -log(fdr.thr)) + 
+  geom_hline(yintercept = -log(0.05)) + 
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(bon.thr), label = "Bonf < 0.05") +
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(fdr.thr), label = "FDR < 0.05") +
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(0.05), label = "P-val < 0.05") +
+  geom_point() +
+  xlab("variable") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+if(!targetType == "categorical"){
+plot(my.gplot)
+}
+```
+
+#### Variables with Bonferonni corrected p-value < 0.05: `r sum(plot.dset$pval <= bon.thr)`
+
+#### `r if(length(fdr.thr)>0){paste0("Variables with FDR corrected p-value < 0.05: ", sum(plot.dset$pval <= fdr.thr))}`
+
+#### Variables with p-value < 0.05: `r sum(plot.dset$pval <= 0.05)`
+
+```{r}
+hist(plot.dset$ML_Varimp, 
+     xlab = "Variable Importance", 
+     main = "Histogram of Variable Importance",
+     col = brewer.pal(n = 10, name = "Spectral")[runif(1, 1, 10)])
+```
+
+```{r,fig.width=12, fig.height=50, warning=F}
+  pos.group <- plot.dset$col[plot.dset$cmpvar > 0][1]
+  neg.group <- plot.dset$col[plot.dset$cmpvar < 0][1]
+  
+if(targetType == "binary"){
+  fill.name1 <- paste0("Cohens D (", pos.group,")")
+  fill.name2 <- paste0("-Cohens D (", neg.group,")")
+}else{
+  fill.name1 <- "R"
+  fill.name2 <- "-R"
+}
+  plot.dset$significance <- ""
+  plot.dset$significance[plot.dset$pval < 0.05] <- "*"
+  plot.dset$significance[plot.dset$pval < fdr.thr] <- "**"
+  plot.dset$significance[plot.dset$pval < bon.thr] <- "***"
+  
+  #plot.dset$sigvar_name <- paste0(plot.dset$significance, plot.dset$variable)
+  
+  max_this_VarImp <- max(plot.dset$ML_Varimp)
+  n <- dim(plot.dset)[1]
+  
+  scale.xax <- max(plot.dset$ML_Varimp)/abs(plot.dset$cmpvar[which.max(plot.dset$ML_Varimp)])*.5
+  
+  gg <- ggplot(plot.dset, aes(x = reorder(variable, ML_Varimp))) +
+    coord_flip() +
+    geom_col(aes(y = ML_Varimp, fill = "Variable Importance"), alpha = .9)+
+    geom_text(aes(y = ML_Varimp, label = round(ML_Varimp, 1)), hjust = 0)+
+    
+    geom_col(aes(y = cmpvar*scale.xax, fill = fill.name1), alpha = .9) +
+    geom_col(aes(y = cmpvar*-1*scale.xax, fill = fill.name2), alpha = .9) +
+    geom_text(aes(y = abs(cmpvar)*scale.xax, label = paste0(round(cmpvar, 2), significance)), hjust = 0)+
+    
+    theme(legend.position = "right",legend.justification = c(0, 1),
+          axis.text.x = element_blank(),
+          plot.margin = unit(c(1,1,1,1), "cm",),
+          # ,aspect.ratio = n/10
+          panel.background = element_blank()
+    )+
+    scale_fill_manual(values=c("pink","lightblue", "grey"))+
+    ylim(0,max_this_VarImp + 5) # Will cause warning "Removed [x] rows containing missing values (position_stack)." This is because the negative values are hidden, and it is nothing to worry about.
+  
+  plot(gg)
+```
+
+#### Top 10 Variable Importance:
+  `r paste(plot.dset$variable[order(plot.dset$ML_Varimp, decreasing = T)][1:10], collapse = ", ")`
+
+#### `r if(targetType != "categorical"){paste0("Top 10 magnitude ", my.xlab, ":")}`
+  `r if(targetType != "categorical"){paste(plot.dset$variable[order(abs(plot.dset$cmpvar), decreasing = T)][1:10], collapse = ", ")}`
+
+```{r,fig.width=8, fig.height=8}
+if(targetType == "binary"){
+  PredVal_filename <- paste0(outDir, "/", rNCVdir, "/", rdata_prefix, "/", var_to_predict, "_", rdata_prefix, '_Rep_',1,'_fold_',1,'-PredVal.rda')
+load(PredVal_filename)
+
+my.methods <- names(pred.val$prediction$test)
+
+for(method in my.methods){
+  n_test <- nrow(pred.val$prediction$test[[method]])
+  
+  conf <- list()
+  
+  fpr <- list()
+  tpr <- list()
+  thr <- list()
+  
+  cols <- rainbow(25, alpha =0.25)
+  for(i in 1:nRep){
+    for(j in 1:nFolds.outer){
+      PredVal_filename <- paste0(outDir, "/", rNCVdir, "/", 
+                                 rdata_prefix, "/", var_to_predict, "_", 
+                                 rdata_prefix, '_Rep_',i,'_fold_',j,'-PredVal.rda')
+      load(PredVal_filename)
+      
+      
+      
+      ref.lv <- levels(pred.val$prediction$test[[method]]$obs)[2]
+      
+      preds <- pred.val$prediction$test[[method]][ref.lv]
+      labs <- as.numeric(pred.val$prediction$test[[method]]$obs)
+      
+      
+      # My own method for creating ROC curve
+      srt.pred <- order(preds[,1], decreasing = T)
+      preds.srt <- preds[srt.pred,1]
+      labs.srt <- labs[srt.pred]
+      
+      thr[[j+(i-1)*nFolds.outer]] <- preds.srt
+      thr.unq <- unique(preds.srt)
+      fpr[[j+(i-1)*nFolds.outer]] <- sapply(1:length(thr.unq), function(x){sum(labs.srt[preds.srt >= thr.unq[x]] == 1)}) / sum(labs.srt == 1)
+      tpr[[j+(i-1)*nFolds.outer]] <- sapply(1:length(thr.unq), function(x){sum(labs.srt[preds.srt >= thr.unq[x]] == 2)}) / sum(labs.srt == 2)
+      
+      my.title <- paste0("ROC: Predicting ",var_to_predict, " using ",method, " method.")
+      
+      if(i == 1 && j == 1){
+        plot(fpr[[j+(i-1)*nFolds.outer]], tpr[[j+(i-1)*nFolds.outer]], main = my.title, type = 'l', col = cols[j+(i-1)*nFolds.outer], xlab = "False Positive Rate", ylab = "True Positive Rate")
+      }else{
+        lines(fpr[[j+(i-1)*nFolds.outer]], tpr[[j+(i-1)*nFolds.outer]], main = my.title, col = cols[j+(i-1)*nFolds.outer])
+      }
+      abline(a = 0,b = 1)
+      
+    }
+  }
+  
+  ninterp <- length(fpr[[1]])
+  fpr_interp <- seq(0,1, length.out = ninterp)
+  
+  tpr_interp <- lapply(1:(nFolds.outer*nRep), function(x){approx(fpr[[x]], tpr[[x]], fpr_interp, ties = min)$y})
+  tpr_interp <- lapply(tpr_interp, function(x){x[is.na(x)] <- 0; return(x)})
+  
+  tpr_avg <- sapply(1:ninterp, function(x){mean(unlist(lapply(tpr_interp,'[', x)))})
+  tpr_sd <- sapply(1:ninterp, function(x){sd(unlist(lapply(tpr_interp,'[', x)))})
+  
+  lines(fpr_interp, tpr_avg, col = "red")
+  lines(fpr_interp, tpr_avg + tpr_sd, col = "red")
+  lines(fpr_interp, tpr_avg - tpr_sd, col = "red")
+}
+}
+```
+
+```{r,fig.width=8, fig.height=8}
+if(targetType == "binary"){
+  PredVal_filename <- paste0(outDir, "/", rNCVdir, "/", rdata_prefix, "/", var_to_predict, "_", rdata_prefix, '_Rep_',1,'_fold_',1,'-PredVal.rda')
+  load(PredVal_filename)
+  
+  my.methods <- names(pred.val$prediction$test)
+  
+  for(method in my.methods){
+    n_test <- nrow(pred.val$prediction$test[[method]])
+    
+    conf <- list()
+  for(i in 1:nRep){
+    for(j in 1:nFolds.outer){
+        PredVal_filename <- paste0(outDir, "/", rNCVdir, "/", rdata_prefix, "/", var_to_predict, "_", rdata_prefix, '_Rep_',i,'_fold_',j,'-PredVal.rda')
+        load(PredVal_filename)
+        
+        library(ROCR)
+        
+        #ref.lv <- as.character(data[1, var_to_predict])
+        ref.lv <- levels(pred.val$prediction$test[[method]]$obs)[2]
+        preds <- pred.val$prediction$test[[method]][ref.lv]
+        labs <- as.numeric(pred.val$prediction$test[[method]]$obs)
+        
+        
+        pred <- prediction(preds, labs)
+        perf <- performance(pred,"tpr", "fpr")
+        
+        my.title <- paste0("ROC: Predicting ",var_to_predict, " using ",method, " method.")
+        
+        
+        if(i == 1 && j == 1){
+          plot(perf, colorize = TRUE, main = my.title)
+        }else{
+          plot(perf, colorize = TRUE, add = T)
+        }
+        abline(a = 0,b = 1)
+        
+        preds2 <- pred.val$prediction$test[[method]]$pred
+        labs2 <- pred.val$prediction$test[[method]]$obs
+        conf[[j+(i-1)*nFolds.outer]] <- confusionMatrix(preds2, labs2)$table
+      }
+    }
+    print(paste0("Confusion Matrix: Predicting ",var_to_predict, " using ",method, " method."))
+    print(apply(simplify2array(conf), 1:2, mean))
+  }
+}
+```
+
+
+
+
+
+
