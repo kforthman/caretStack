@@ -1,3 +1,5 @@
+library(caretStack)
+
 prepped_data <- read.csv('_____.csv', stringsAsFactors = F)
 
 # Binary target example
