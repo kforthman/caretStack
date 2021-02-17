@@ -89,7 +89,7 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, method='none',
   }
 
   else if (models[[1]]$modelType=='Classification'){
-    resp.lv <- as.character(unique(models[[1]]$pred$obs))
+    resp.lv <- levels(models[[1]]$pred$obs)
     for (m in 1:length(models)){
       res$train[[m]] <- models[[m]]$pred[, c('rowIndex', 'Resample', 'obs', 'pred', resp.lv)]
       res$test[[m]]  <- data.frame(
@@ -155,6 +155,10 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, method='none',
     }
     for (m in 1:(length(res$test))){
       res$test[[m]]$pred <- factor(resp.lv[apply(res$test[[m]][,resp.lv], 1, which.max)])
+      if(length(levels(res$test[[m]]$pred)) < length(resp.lv)){
+        warning(paste0("Levels of predicted and observed data do not match. Levels of predicted data: ", paste(levels(res$test[[m]]$pred), collapse = ", "), ". Levels of observed data: ", paste(resp.lv, collapse = ", "), ". Forcing levels to match."))
+      }
+      levels(res$test[[m]]$pred) <- resp.lv
     }
   }
 
