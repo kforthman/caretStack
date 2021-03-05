@@ -5,9 +5,9 @@
 # i.e. a full dataset is divided into k parts for "training" and "testing" (outer-loop)
 #      each training set is further divided into k parts for parameter optimization (inner loop)
 
-modelPerf.summ <- function(predval.list){
-  perf.train <- lapply(predval.list$train, function(x) ddply(x, .(Resample), modelPerf))
-  perf.test <- sapply(predval.list$test , modelPerf)
+modelPerf.summ <- function(predval.list, trControl){
+  perf.train <- lapply(predval.list$train, function(x) ddply(x, .(Resample), modelPerf, trControl = trControl))
+  perf.test <- sapply(predval.list$test , modelPerf, trControl = trControl)
   m <- data.frame(sapply(perf.train, function(x) apply(x[,-1], 2, mean, na.rm=T)))
   s <- data.frame(sapply(perf.train, function(x) apply(x[,-1], 2, sd, na.rm=T)))
   m$metric <- rownames(m)

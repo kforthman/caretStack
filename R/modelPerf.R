@@ -4,12 +4,12 @@
 #  measures whereas defaultSummary(pred) gives 'combine fold' measures.
 # For consistency purpose (with stacking predictions), I use defaultSummary(pred)
 
-modelPerf <- function(df.obs.pred){
+modelPerf <- function(df.obs.pred,trControl){
   if (!class(df.obs.pred$obs) %in% c('character', 'factor')) {
-    return(defaultSummary(df.obs.pred))
+    return(trControl$summaryFunction(df.obs.pred))
   }
   else {
     resp.lv = levels(df.obs.pred$obs)
-    return(multiClassSummary(df.obs.pred, lev = resp.lv))
+    return(trControl$summaryFunction(df.obs.pred, lev = resp.lv))
   }
 }

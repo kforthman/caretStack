@@ -90,9 +90,9 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
       }
 
       # Step 3. Model performance in the calibrating & hold-out sets of the outer loop
-      perf.t.tmp <- lapply(pred.val$prediction$train, function(x) ddply(x, .(Resample), modelPerf))
+      perf.t.tmp <- lapply(pred.val$prediction$train, function(x) ddply(x, .(Resample), modelPerf, trControl = trControl))
       perf.train <- do.call(rbind, perf.t.tmp)
-      perf.test <- data.frame(modelPerf.summ(pred.val$prediction)$test)
+      perf.test <- data.frame(modelPerf.summ(pred.val$prediction, trControl)$test)
       if (length(methods)==1){
         rownames(perf.test) <- methods
       } else if (length(methods)>1){
@@ -125,7 +125,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
       df.comb$pred <- factor(resp.lv[apply(df.comb[, resp.lv], 1, which.max)])
       df.comb$obs <- data[, resp.var]
     }
-    perf.comb <- modelPerf(df.comb) # trControl$summaryFunction(df.comb)
+    perf.comb <- modelPerf(df.comb, trControl)
     perf.train$method <- gsub("\\..*", "", rownames(perf.train) )
     perf.test$method  <- gsub("\\..*", "", rownames(perf.test) )
 
@@ -151,7 +151,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
     df.ensemble$pred <- factor(resp.lv[apply(df.ensemble, 1, which.max)])
     df.ensemble$obs <- data[, resp.var]
   }
-  res$perf.ensemble <- modelPerf(df.ensemble)
+  res$perf.ensemble <- modelPerf(df.ensemble, trControl)
 
   res$elapsed.time <- (proc.time() - ptm)[3]
   return(res)
