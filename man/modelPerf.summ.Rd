@@ -4,7 +4,7 @@
 \alias{modelPerf.summ}
 \title{No Description.}
 \usage{
-modelPerf.summ(predval.list)
+modelPerf.summ(predval.list, trControl)
 }
 \description{
 No Description.

@@ -4,7 +4,7 @@
 \alias{modelPerf}
 \title{No Description.}
 \usage{
-modelPerf(df.obs.pred)
+modelPerf(df.obs.pred, trControl)
 }
 \description{
 No Description.
