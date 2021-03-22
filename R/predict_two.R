@@ -2,6 +2,11 @@
 #'
 #' Performs repeated nested cross-validation on the input dataset.
 #'
+#' Target variable: Your target/dependent variable can be either categorical, binary, or numerical. If your target variable is categorical or binary, please ensure it is input as a factor.
+#'
+#' Predictor variables:
+#' Though you can have binary or categorical targets, you cannot have binary/categorical predictors. But, it is possible to convert your binary and categorical predictors to numerical predictors. You can convert your binary predictors to 0,1. You can numerically rank ordinal categorical predictors. Nominal categorical variables, like race, can be converted to numerical variables using one-hot-encoding
+#'
 #' Missing data:
 #' If dataset contains predictors with missing data, the missing entries will be imputed using KNN imputation. If any subject is missing over 30\% of their predictor variables, they are removed from the analysis. Any cases that have missing data for the target variable will be removed. Only 1 target allowed.
 #'
