@@ -71,7 +71,8 @@ predict_two <- function(data,
                         nRep = 5,
                         methods=c('svmRadial', 'ranger', 'glmnet'),
                         metric='RMSE',
-                        ncore = 1){
+                        ncore = 1,
+                        cmp.grp = NA){
 
   if(!(targetType == "binary" | targetType == "categorical" | targetType == "numerical")){
     stop("Please specify targetType as either 'binary', 'categorical', or 'numerical'")
@@ -147,6 +148,26 @@ predict_two <- function(data,
   if(targetType %in% c("binary","categorical")){data[,var_to_predict] <- as.factor(data[,var_to_predict])}
   if(targetType == "numerical"){data[,var_to_predict] <- as.numeric(data[,var_to_predict])}
 
+
+  # Setting comparison group
+  if(targetType %in% c("binary","categorical")){
+    if(is.na(cmp.grp)){
+      cmp.grp <- as.character(data[1, var_to_predict])
+    }
+    # Make sure the comparison group is not the first level. This ensures specificity and sensitivity are calculated correctly
+    oldLevels <- levels(data[,var_to_predict])
+    levels(data[,var_to_predict]) <- c(levels(data[,var_to_predict])[!levels(data[,var_to_predict]) %in% cmp.grp], cmp.grp)
+    if(!identical(oldLevels, levels(data[,var_to_predict]))){
+      message(paste0("Levels have been rearranged in the following order: ",
+                     paste(levels(data[,var_to_predict]), collapse = ", ")
+                     ))
+      }
+  }else if(targetType == "numerical"){
+
+    cmp.grp <- data[1, var_to_predict]
+
+  }
+
   # Set up parallel computing
   cl = ncore; registerDoParallel(cl)
 
@@ -176,7 +197,7 @@ predict_two <- function(data,
 
     res.rncv <- rNCV(data = data,
                      resp.var = var_to_predict,
-                     ref.lv = data[1, var_to_predict],
+                     ref.lv = cmp.grp,
                      nRep = nRep,
                      nFolds.outer = nFolds.outer,
                      methods = methods,

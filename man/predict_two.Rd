@@ -16,7 +16,8 @@ predict_two(
   nRep = 5,
   methods = c("svmRadial", "ranger", "glmnet"),
   metric = "RMSE",
-  ncore = 1
+  ncore = 1,
+  cmp.grp = NA
 )
 }
 \arguments{
