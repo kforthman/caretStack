@@ -1,3 +1,5 @@
+test
+
 .Rproj.user
 
 .DS_Store
@@ -9,3 +11,7 @@ man/Rapp.history
 .smbdelete*
 
 listComplete
+
+._*
+
+R/._*
