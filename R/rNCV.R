@@ -122,8 +122,8 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
       df.comb <- data.frame(obs = data[, resp.var], y.pred.comb)
     } else if (!'pred' %in% resp.lv){
       df.comb <- data.frame(y.pred.comb)
-      df.comb$pred <- factor(resp.lv[apply(df.comb[, resp.lv], 1, which.max)])
-      levels(df.comb$pred) <- levels(data[, resp.var])
+      df.comb$pred <- factor(resp.lv[apply(df.comb[, resp.lv], 1, which.max)],
+                             levels = levels(data[, resp.var]))
       df.comb$obs <- data[, resp.var]
     }
     perf.comb <- modelPerf(df.comb, trControl)
@@ -149,8 +149,7 @@ rNCV <- function(data, resp.var, ref.lv=NULL, nRep, nFolds.outer, methods,
     for (j in resp.lv){
       df.ensemble[, j] <- rowMeans(res$y.pred.comb[, grep(j, colnames(res$y.pred.comb))])
     }
-    df.ensemble$pred <- factor(resp.lv[apply(df.ensemble, 1, which.max)])
-    levels(df.ensemble$pred) <- levels(data[, resp.var])
+    df.ensemble$pred <- factor(resp.lv[apply(df.ensemble, 1, which.max)], levels = levels(data[, resp.var]))
     df.ensemble$obs <- data[, resp.var]
   }
   res$perf.ensemble <- modelPerf(df.ensemble, trControl)

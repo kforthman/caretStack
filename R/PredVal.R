@@ -150,16 +150,12 @@ PredVal <- function(models, TestSet, resp.var, ref.lv=NULL, method='none',
 
       # predicted classes based on predicted probabilities
       res$train[[length(models)+1]]$pred <- factor(
-        resp.lv[apply(res$train[[length(models)+1]][,resp.lv], 1, which.max)]
+        resp.lv[apply(res$train[[length(models)+1]][,resp.lv], 1, which.max)],
+      levels = resp.lv
       )
-      levels(res$train[[length(models)+1]]$pred) <- resp.lv
     }
     for (m in 1:(length(res$test))){
-      res$test[[m]]$pred <- factor(resp.lv[apply(res$test[[m]][,resp.lv], 1, which.max)])
-      if(!identical(levels(res$test[[m]]$pred), resp.lv)){
-        warning(paste0("Levels of predicted and observed data do not match. Levels of predicted data: ", paste(levels(res$test[[m]]$pred), collapse = ", "), ". Levels of observed data: ", paste(resp.lv, collapse = ", "), ". Forcing levels to match."))
-      }
-      levels(res$test[[m]]$pred) <- resp.lv
+      res$test[[m]]$pred <- factor(resp.lv[apply(res$test[[m]][,resp.lv], 1, which.max)], levels = resp.lv)
     }
   }
 

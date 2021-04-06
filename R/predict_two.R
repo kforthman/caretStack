@@ -156,7 +156,8 @@ predict_two <- function(data,
     }
     # Make sure the comparison group is not the first level. This ensures specificity and sensitivity are calculated correctly
     oldLevels <- levels(data[,var_to_predict])
-    levels(data[,var_to_predict]) <- c(levels(data[,var_to_predict])[!levels(data[,var_to_predict]) %in% cmp.grp], cmp.grp)
+    new.lvs <- c(levels(data[,var_to_predict])[!levels(data[,var_to_predict]) %in% cmp.grp], cmp.grp)
+    data[,var_to_predict] <- factor(data[,var_to_predict], levels = new.lvs)
     if(!identical(oldLevels, levels(data[,var_to_predict]))){
       message(paste0("Levels have been rearranged in the following order: ",
                      paste(levels(data[,var_to_predict]), collapse = ", ")
