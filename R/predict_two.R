@@ -36,6 +36,7 @@
 #' @param outDir If you would like to save the output files into somewhere other than the working directory, specify that here.
 #' @param rNCVdir Specify the name of the folder rNCV folds will be automatically saved to. For example, if you set rNCVdir to 'rNCV', rdata_prefix to 'my_ML' and outDir to 'Output', the rNCV files will be saved to 'Output/rNCV_files/my_ML/'.
 #' @param ncore For specifying the number of cores to use in parallel computing.
+#' @param ctrl.reg If desired, you may specify custom trainControl settings. Otherwise, trainControl will be set to caretStack defaults.
 #' @inheritParams rNCV
 #'
 #' @importFrom doParallel registerDoParallel
@@ -72,7 +73,8 @@ predict_two <- function(data,
                         methods=c('svmRadial', 'ranger', 'glmnet'),
                         metric='RMSE',
                         ncore = 1,
-                        cmp.grp = NA){
+                        cmp.grp = NA,
+                        ctrl.reg = NA){
 
   if(!(targetType == "binary" | targetType == "categorical" | targetType == "numerical")){
     stop("Please specify targetType as either 'binary', 'categorical', or 'numerical'")
@@ -161,8 +163,8 @@ predict_two <- function(data,
     if(!identical(oldLevels, levels(data[,var_to_predict]))){
       message(paste0("Levels have been rearranged in the following order: ",
                      paste(levels(data[,var_to_predict]), collapse = ", ")
-                     ))
-      }
+      ))
+    }
   }else if(targetType == "numerical"){
 
     cmp.grp <- data[1, var_to_predict]
@@ -174,26 +176,29 @@ predict_two <- function(data,
 
   results_filename <- paste0(outDir, "/", var_to_predict, "_",rdata_prefix, '.results.RData')
   if(!file.exists(results_filename)){
-    if(targetType %in% c("binary","categorical")){
-      ctrl.reg <- trainControl(method = 'cv',
-                               number = 5,
-                               search = 'grid',
-                               summaryFunction = multiClassSummary,  # for more performance statistics
-                               selectionFunction = 'oneSE',
+    if(is.na(ctrl.reg)){
+      message("Using default trainControl settings.")
+      if(targetType %in% c("binary","categorical")){
+        ctrl.reg <- trainControl(method = 'cv',
+                                 number = 5,
+                                 search = 'grid',
+                                 summaryFunction = multiClassSummary,  # for more performance statistics
+                                 selectionFunction = 'oneSE',
 
-                               savePredictions = 'final',
+                                 savePredictions = 'final',
 
-                               classProbs=T,                         # only for classificaiton
-                               sampling='up',                        # for unbalanced classes
-                               allowParallel=T)
-    }else if(targetType == "numerical"){
-      ctrl.reg <- trainControl(method = 'cv',
-                               number = 5,
-                               search = 'grid',
-                               summaryFunction = defaultSummary,  # for more performance statistics
-                               selectionFunction = 'oneSE',
+                                 classProbs=T,                         # only for classificaiton
+                                 sampling='up',                        # for unbalanced classes
+                                 allowParallel=T)
+      }else if(targetType == "numerical"){
+        ctrl.reg <- trainControl(method = 'cv',
+                                 number = 5,
+                                 search = 'grid',
+                                 summaryFunction = defaultSummary,  # for more performance statistics
+                                 selectionFunction = 'oneSE',
 
-                               savePredictions = 'final', allowParallel = T)
+                                 savePredictions = 'final', allowParallel = T)
+      }
     }
 
     res.rncv <- rNCV(data = data,
