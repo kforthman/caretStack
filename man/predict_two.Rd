@@ -17,7 +17,8 @@ predict_two(
   methods = c("svmRadial", "ranger", "glmnet"),
   metric = "RMSE",
   ncore = 1,
-  cmp.grp = NA
+  cmp.grp = NA,
+  ctrl.reg = NA
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ and the first metric given by the \code{summaryFunction} is
 used. (NOTE: If given, this argument must be named.)}
 
 \item{ncore}{For specifying the number of cores to use in parallel computing.}
+
+\item{ctrl.reg}{If desired, you may specify custom trainControl settings. Otherwise, trainControl will be set to caretStack defaults.}
 }
 \description{
 Performs repeated nested cross-validation on the input dataset.
