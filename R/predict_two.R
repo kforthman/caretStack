@@ -109,7 +109,7 @@ predict_two <- function(data,
   #               paste(predictor_vars, collapse = "\n")))
   missing_vars <- predictor_vars[!(predictor_vars %in% names(data))]
   if(length(missing_vars)>0){
-    warning(paste0("There are ", length(missing_vars)," predictor variables that are not in the provided dataset:\n",
+    message(paste0("There are ", length(missing_vars)," predictor variables that are not in the provided dataset:\n",
                    paste(missing_vars, collapse = "\n")))
   }
   #will remove any subjects with more than 30% of predictor variables missing
@@ -119,7 +119,7 @@ predict_two <- function(data,
   data <- data[to_keep,]
   #message which participants are removed
   if(sum(!to_keep)>0){
-    warning(paste0(sum(!to_keep), " observations have been removed because more than 30% of their predictor variables are missing. These are the participants that were removed:\n", paste(which(!to_keep), collapse = '\n')))
+    message(paste0(sum(!to_keep), " observations have been removed because more than 30% of their predictor variables are missing. These are the participants that were removed:\n", paste(which(!to_keep), collapse = '\n')))
   }
 
   # get predictor variables on their own
@@ -140,7 +140,7 @@ predict_two <- function(data,
 
   #since we've already imputed predictor variables, this removes cases that are missing the response variable
   if(sum(!complete.cases(data))>0){
-    warning(paste0(sum(!complete.cases(data)), " participants have been removed because they are missing a value for the response/target variable."))
+    message(paste0(sum(!complete.cases(data)), " participants have been removed because they are missing a value for the response/target variable."))
   }
   data <- data[complete.cases(data),]
 
