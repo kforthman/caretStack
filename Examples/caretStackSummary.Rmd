@@ -110,7 +110,7 @@ plot(plot.dset$cmpvar^2, plot.dset$ML_Varimp, xlab = paste0(my.xlab, "^2"), ylab
 }
 ```
 
-```{r}
+```{r,fig.width=10, fig.height=25}
 fdr.adj <- p.adjust(plot.dset$pval, method = "fdr")
 bon.adj <- p.adjust(plot.dset$pval, method = "bonferroni")
 
@@ -126,12 +126,13 @@ my.gplot <- ggplot(plot.dset,
   geom_hline(yintercept = -log(bon.thr)) + 
   geom_hline(yintercept = -log(fdr.thr)) + 
   geom_hline(yintercept = -log(0.05)) + 
-  annotate("label", x = nrow(plot.dset)*.75, y = -log(bon.thr), label = "Bonf < 0.05") +
-  annotate("label", x = nrow(plot.dset)*.75, y = -log(fdr.thr), label = "FDR < 0.05") +
-  annotate("label", x = nrow(plot.dset)*.75, y = -log(0.05), label = "P-val < 0.05") +
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(bon.thr), label = "Bonf 0.05") +
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(fdr.thr), label = "FDR 0.05") +
+  annotate("label", x = nrow(plot.dset)*.75, y = -log(0.05), label = "P-val 0.05") +
   geom_point() +
   xlab("variable") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  coord_flip()
 
 if(!targetType == "categorical"){
 plot(my.gplot)
@@ -163,9 +164,9 @@ if(targetType == "binary"){
   fill.name2 <- "-R"
 }
   plot.dset$significance <- ""
-  plot.dset$significance[plot.dset$pval < 0.05] <- "*"
-  plot.dset$significance[plot.dset$pval < fdr.thr] <- "**"
-  plot.dset$significance[plot.dset$pval < bon.thr] <- "***"
+  plot.dset$significance[plot.dset$pval <= 0.05] <- "*"
+  plot.dset$significance[plot.dset$pval <= fdr.thr] <- "**"
+  plot.dset$significance[plot.dset$pval <= bon.thr] <- "***"
   
   #plot.dset$sigvar_name <- paste0(plot.dset$significance, plot.dset$variable)
   
