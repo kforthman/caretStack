@@ -80,6 +80,8 @@ predict_two <- function(data,
     stop("Please specify targetType as either 'binary', 'categorical', or 'numerical'")
   }
 
+  if(!typeof(my.df) == "list"){stop("Please input the data as a dataframe.")}
+
   # If there is a '/' at the end of the directory name, remove it.
   if(substr(outDir, nchar(outDir), nchar(outDir)) == '/'){outDir <- substr(outDir, 1, nchar(outDir)-1)}
   if(substr(rNCVdir, nchar(rNCVdir), nchar(rNCVdir)) == '/'){rNCVdir <- substr(rNCVdir, 1, nchar(rNCVdir)-1)}
