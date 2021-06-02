@@ -3,7 +3,7 @@ Title: Stacks models from the caret package to create a more robust prediction
 Version: 0.0.2
 Authors@R: person("Katie", "Forthman", email = "kclary@laureateinstitute.org", role = c("aut", "cre"))
 Description: Use this package on top of caret to easily stack machine learning models and plot your results.
-Depends: R (>= 4.0.0), caret (>= 6.0-86), DMwR (>= 0.4.1), doBy (>= 4.6.6), doParallel (>= 1.0.15), effsize (>= 0.8.0), ggplot2 (>= 3.3.1), ggpubr (>= 0.3.0), glmnet (>= 4.0), kernlab (>= 0.9-29), klaR (>= 0.6-15), mlbench (>= 2.1-1), MLmetrics (>= 1.1.1), pdp (>= 0.7.0), ranger (>= 0.12.1)
+Depends: R (>= 4.0.0), caret (>= 6.0-86), DMwR2 (>= 0.0.2), doBy (>= 4.6.6), doParallel (>= 1.0.15), effsize (>= 0.8.0), ggplot2 (>= 3.3.1), ggpubr (>= 0.3.0), glmnet (>= 4.0), kernlab (>= 0.9-29), klaR (>= 0.6-15), mlbench (>= 2.1-1), MLmetrics (>= 1.1.1), pdp (>= 0.7.0), ranger (>= 0.12.1)
 License: None
 Encoding: UTF-8
 LazyData: true
