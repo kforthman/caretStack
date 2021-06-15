@@ -80,6 +80,27 @@ predict_two <- function(data,
     stop("Please specify targetType as either 'binary', 'categorical', or 'numerical'")
   }
 
+  # Check that the target is what the user claims it to be
+  if(targetType == "binary"){
+    if(!is.factor(data[,var_to_predict]) |
+       length(levels(data[,var_to_predict])) !=2 ){
+      stop('Please input the target as a factor with 2 levels.')
+    }
+  }
+
+  if(targetType == "categorical"){
+    if(!is.factor(data[,var_to_predict]) |
+       length(levels(data[,var_to_predict])) <=2){
+      stop('Please input the target as a factor with more than 2 levels.')
+    }
+  }
+
+  if(targetType == "numerical"){
+    if(!is.numeric(data[,var_to_predict])){
+      stop('Please input the target as a numeric variable.')
+    }
+  }
+
   if(!typeof(data) == "list"){stop("Please input the data as a dataframe.")}
 
   # If there is a '/' at the end of the directory name, remove it.
@@ -109,13 +130,32 @@ predict_two <- function(data,
     predictor_vars <- c(predictor_vars, these_predictor_vars)
   }
 
-  #message(paste0("The following variables have been selected as predictors:\n",
-  #               paste(predictor_vars, collapse = "\n")))
+  # Throws error if target is in predictor list.
+  if(var_to_predict %in% predictor_vars){
+    stop("Your target variable is included in your list of predictors. You cannot use the target as a predictor. Please remove the target variable name from your list of predictors.")
+  }
+
+  # Throws error if a predictor is listed more than once.
+  if(sum(table(predictor_vars) > 1) > 0){
+    stop("You have listed one or more predictors more than once. Please ensure that each predictor is only listed once.")
+  }
+
+  # Throws error if a listed predictor is not in the dataset.
   missing_vars <- predictor_vars[!(predictor_vars %in% names(data))]
   if(length(missing_vars)>0){
-    message(paste0("There are ", length(missing_vars)," predictor variables that are not in the provided dataset:\n",
+    if(length(missing_vars)>1){
+    stop(paste0("There are ", length(missing_vars)," predictor variables that are not in the provided dataset:\n",
                    paste(missing_vars, collapse = "\n")))
+    }else{
+      stop(paste0("There is ", length(missing_vars)," predictor variable that is not in the provided dataset:\n",
+                  paste(missing_vars, collapse = "\n")))
+    }
   }
+
+  if(!var_to_predict %in% colnames(data)){
+    stop("The target variable is not in the provided dataset.")
+  }
+
   #will remove any subjects with more than 30% of predictor variables missing
   n_na <- rowSums(is.na(data[, predictor_vars]))
   fraction_na <- n_na / length(predictor_vars)
@@ -147,11 +187,6 @@ predict_two <- function(data,
     message(paste0(sum(!complete.cases(data)), " participants have been removed because they are missing a value for the response/target variable."))
   }
   data <- data[complete.cases(data),]
-
-  # Change target to a factor.
-  if(targetType %in% c("binary","categorical")){data[,var_to_predict] <- as.factor(data[,var_to_predict])}
-  if(targetType == "numerical"){data[,var_to_predict] <- as.numeric(data[,var_to_predict])}
-
 
   # Setting comparison group
   if(targetType %in% c("binary","categorical")){
