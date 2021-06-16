@@ -36,6 +36,7 @@
 #' @param outDir If you would like to save the output files into somewhere other than the working directory, specify that here.
 #' @param rNCVdir Specify the name of the folder rNCV folds will be automatically saved to. For example, if you set rNCVdir to 'rNCV', rdata_prefix to 'my_ML' and outDir to 'Output', the rNCV files will be saved to 'Output/rNCV_files/my_ML/'.
 #' @param ncore For specifying the number of cores to use in parallel computing.
+#' @param cmp.grp If left as the default, NA, the comparison group will be set to the assignment of the first observation in your dataset. If you prefer a different comparison group, please set this argument as the group name.
 #' @param ctrl.reg If desired, you may specify custom trainControl settings. Otherwise, trainControl will be set to caretStack defaults.
 #' @inheritParams rNCV
 #'
