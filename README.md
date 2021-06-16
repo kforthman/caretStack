@@ -3,6 +3,10 @@ The following is a step-by-step guide for how to create a stacked ML model on LI
 
 Be sure to check back regularly for updates!
 
+List of base learners available in caret:
+* https://rdrr.io/cran/caret/man/models.html
+* https://topepo.github.io/caret/available-models.html
+
 ### Step 1: Installation
 To install in R:
 
