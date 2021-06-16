@@ -7,6 +7,8 @@ List of base learners available in caret:
 * https://rdrr.io/cran/caret/man/models.html
 * https://topepo.github.io/caret/available-models.html
 
+A PowerPoint presentation describing how the training and stacking work is in the Resources folder.
+
 ### Step 1: Installation
 To install in R:
 
