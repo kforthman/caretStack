@@ -172,6 +172,11 @@ predict_two <- function(data,
   # remove any predictors with near zero variance, since this can cause problems with some methods
   # predictors <- predictors[, -nearZeroVar(predictors, freqCut = 90/10)]
 
+  # Throw error if there are non numeric predictors.
+  nonnum_pred <- sapply(1:ncol(predictors), function(x){!is.numeric(predictors[,x])})
+  if(sum(nonnum_pred) > 0){
+    stop(paste0("You have non-numeric predictors: ", paste(colnames(predictors)[which(nonnum_pred)], collapse = ", ")))
+  }
 
   #do k-nearest neighbors imputation on the predictors, since missing values cause problems with some methods
   #this could be replaced with some other imputation method like mice
